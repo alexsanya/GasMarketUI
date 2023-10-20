@@ -1,37 +1,23 @@
-import { useAccount, useSignTypedData, useContractRead } from 'wagmi'
-import { useContext, useState, useEffect } from 'react'
+import { useAccount, useSignTypedData } from 'wagmi'
+import { useEffect } from 'react'
 
-import noncesABI from '../resources/noncesABI.json' assert { type: 'json' }
 import permitTypes from '../resources/permitTypes.json' assert { type: 'json' }
-import DomainProvider, { DomainContext } from './domainProvider'
-import ContractDataProvider, { ContractDataContext } from './ContractDataProvider'
-import useBlock from '../hooks/useBlock'
+import usePermitMessage from '../hooks/usePermitMessage'
 import useDomain from '../hooks/useDomain'
 
 
 const MessageSignerWithDomain = ({ token, value, onSuccess }) => {
   const { address, isConnected } = useAccount()
-  const block = useBlock()
   return (
-    address && block &&
-    <DomainProvider address={token}>
-      <ContractDataProvider contract={token} abi={noncesABI} method="nonces" args={[address]}>
-        <MessageSigner address={address} value={value} block={block} onSuccess={onSuccess} />
-      </ContractDataProvider>
-    </DomainProvider>
+    address && token &&
+    <MessageSigner address={address} value={value} token={token} onSuccess={onSuccess} />
   )
 }
 
-const MessageSigner = ({ address, value, block, onSuccess }) => {
-  const domain = useContext(DomainContext)
-  const nonce = useContext(ContractDataContext)
-  const message = {
-    owner: address,
-    spender: "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC",
-    value,
-    nonce,
-    deadline: block.timestamp + 3600n
-  }
+const MessageSigner = ({ address, token, value, onSuccess }) => {
+  const domain = useDomain(address)
+  const message = usePermitMessage(address, token, value)
+
   const { data, isError, isLoading, isSuccess, signTypedData } =
     useSignTypedData({
       domain,
