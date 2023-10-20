@@ -6,17 +6,17 @@ import usePermitMessage from '../hooks/usePermitMessage'
 import useDomain from '../hooks/useDomain'
 
 
-const MessageSignerWithDomain = ({ token, value, onSuccess }) => {
+const MessageSignerWithAddress = ({ token, value, lifetime, onSuccess }) => {
   const { address, isConnected } = useAccount()
   return (
     address && token &&
-    <MessageSigner address={address} value={value} token={token} onSuccess={onSuccess} />
+    <MessageSigner address={address} value={value} token={token} lifetime={lifetime} onSuccess={onSuccess} />
   )
 }
 
-const MessageSigner = ({ address, token, value, onSuccess }) => {
+const MessageSigner = ({ address, token, value, lifetime, onSuccess }) => {
   const domain = useDomain(address)
-  const message = usePermitMessage(address, token, value)
+  const message = usePermitMessage(address, token, value, lifetime)
 
   const { data, isError, isLoading, isSuccess, signTypedData } =
     useSignTypedData({
@@ -42,4 +42,4 @@ const MessageSigner = ({ address, token, value, onSuccess }) => {
   )
 }
 
-export default MessageSignerWithDomain 
+export default MessageSignerWithAddress 

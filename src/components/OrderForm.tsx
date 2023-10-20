@@ -7,6 +7,7 @@ export function OrderForm() {
   const [token, setToken] = useState('')
   const [reward, setReward] = useState('')
   const [value, setValue] = useState('')
+  const [lifetime, setLifetime] = useState('')
 
   const onPermitSigned = (message, signature) => {
     console.log('Permit signature: ', signature)
@@ -38,7 +39,15 @@ export function OrderForm() {
           value={reward}
         />
       </div>
-      <PermitMessageSigner token={token} value={value} onSuccess={onPermitSigned}/>
+      <div>
+        Lifetime in seconds:{' '}
+        <input
+          onChange={(e) => setLifetime(e.target.value)}
+          placeholder="lifetime"
+          value={lifetime}
+        />
+      </div>
+      <PermitMessageSigner token={token} value={value} lifetime={lifetime} onSuccess={onPermitSigned}/>
     </>
   )
 }
