@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -20,6 +22,8 @@ export function OrderForm() {
   const [orderData, setOrderData] = useState(null)
   const [permitSignature, setPermitSignature] = useState('')
   const [permitMessage, setPermitMessage] = useState(null)
+  const [successTabOpened, setSuccessTabOpened] = useState(false)
+  const [errorTabOpened, setErrorTabOpened] = useState(false)
 
   const orderForm = useRef();
 
@@ -52,19 +56,33 @@ export function OrderForm() {
       permitSignature,
       rewardSignature
     }
-    await fetch('/api/order', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(order),
-    })
-    orderForm.current.reset()
-    setOrderData(null)
-    setPermitMessage(null)
-    setPermitSignature('')
+
+    const response = await fetch('/api/order', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      })
+    if (response.ok) {
+      setSuccessTabOpened(true)
+      orderForm.current.reset()
+      setOrderData(null)
+      setPermitMessage(null)
+      setPermitSignature('')
+    } else {
+      setOrderData(null)
+      setErrorTabOpened(true)
+    }
+  }
+  
+  const closeSuccessTab = () => {
+    setSuccessTabOpened(false)
   }
 
+  const closeErrorTab = () => {
+    setErrorTabOpened(false)
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -136,6 +154,28 @@ export function OrderForm() {
           </Button>
         </Box>
       </Box>
+      <Snackbar 
+        open={successTabOpened}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={closeSuccessTab}
+      >
+        <Alert onClose={closeSuccessTab} severity="success" sx={{ width: '100%' }}>
+          Order is published
+        </Alert>
+      </Snackbar>
+      <Snackbar 
+        open={errorTabOpened}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={closeErrorTab}
+      >
+        <Alert onClose={closeErrorTab} severity="error" sx={{ width: '100%' }}>
+          There was an error
+        </Alert>
+      </Snackbar>
+
+
     </Container>
   )
 }
