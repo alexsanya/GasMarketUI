@@ -10,14 +10,32 @@ export function OrderForm() {
   const [value, setValue] = useState('')
   const [lifetime, setLifetime] = useState('')
   const [permitSignature, setPermitSignature] = useState('')
+  const [permitMessage, setPermitMessage] = useState({})
 
   const onPermitSigned = (message, signature) => {
-    console.log('Permit signature: ', signature)
+    setPermitMessage(message)
     setPermitSignature(signature)
   }
 
-  const onRewardSigned = (message, signature) => {
-    console.log('Reward signature: ', signature)
+  const onRewardSigned = async (message, rewardSignature) => {
+    const order = {
+      signer: permitMessage.owner,
+      token,
+      value,
+      deadline: permitMessage.deadline.toString(),
+      reward,
+      permitSignature,
+      rewardSignature
+    }
+    const response = await fetch('/api/order', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order),
+    })
+    console.log(order)
+    console.log(response)
   }
 
   return (
