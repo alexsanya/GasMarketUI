@@ -15,7 +15,7 @@ const MessageSignerWithAddress = ({ token, value, lifetime, onSuccess }) => {
 }
 
 const MessageSigner = ({ address, token, value, lifetime, onSuccess }) => {
-  const domain = useDomain(address)
+  const domain = useDomain(token)
   const message = usePermitMessage(address, token, value, lifetime)
 
   const { data, isError, isLoading, isSuccess, signTypedData } =

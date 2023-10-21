@@ -1,6 +1,8 @@
 import { useAccount, useContractRead } from 'wagmi'
 import { useState, useEffect } from 'react'
 import useBlock from './useBlock'
+import { GAS_BROKER_ADDRESS } from '../config'
+
 import noncesABI from '../resources/noncesABI.json' assert { type: 'json' }
 
 function usePermitMessage(address, token, value, lifetime) {
@@ -18,7 +20,7 @@ function usePermitMessage(address, token, value, lifetime) {
     if (!address || !block || (nonce === undefined)) return
     setMessage({
       owner: address,
-      spender: "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC",
+      spender: GAS_BROKER_ADDRESS,
       value,
       nonce,
       deadline: block.timestamp + BigInt(lifetime)

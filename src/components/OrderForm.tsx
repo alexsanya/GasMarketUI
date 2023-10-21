@@ -2,15 +2,22 @@
 
 import { useState } from 'react'
 import PermitMessageSigner from '../components/PermitMessageSigner'
+import RewardMessageSigner from '../components/RewardMessageSigner'
 
 export function OrderForm() {
   const [token, setToken] = useState('')
   const [reward, setReward] = useState('')
   const [value, setValue] = useState('')
   const [lifetime, setLifetime] = useState('')
+  const [permitSignature, setPermitSignature] = useState('')
 
   const onPermitSigned = (message, signature) => {
     console.log('Permit signature: ', signature)
+    setPermitSignature(signature)
+  }
+
+  const onRewardSigned = (message, signature) => {
+    console.log('Reward signature: ', signature)
   }
 
   return (
@@ -47,7 +54,8 @@ export function OrderForm() {
           value={lifetime}
         />
       </div>
-      <PermitMessageSigner token={token} value={value} lifetime={lifetime} onSuccess={onPermitSigned}/>
+      <PermitMessageSigner token={token} value={value} lifetime={lifetime} onSuccess={onPermitSigned} />
+      <RewardMessageSigner permitSignature={permitSignature} value={reward} onSuccess={onRewardSigned}/>
     </>
   )
 }
