@@ -34,8 +34,7 @@ export function OrderForm() {
       },
       body: JSON.stringify(order),
     })
-    console.log(order)
-    console.log(response)
+
   }
 
   return (

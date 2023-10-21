@@ -14,7 +14,7 @@ function usePermitMessage(address, token, value, lifetime) {
     args: [address]
   })
 
-  const [ message, setMessage ] = useState({})
+  const [ message, setMessage ] = useState(null)
 
   useEffect(() => {
     if (!address || !block || (nonce === undefined)) return

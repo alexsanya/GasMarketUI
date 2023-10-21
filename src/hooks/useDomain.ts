@@ -5,7 +5,7 @@ import domainABI from '../resources/domainABI.json' assert { type: 'json' }
 
 function useDomain(address) {
 
-  const [domain, setDomain] = useState({})
+  const [domain, setDomain] = useState(null)
 
   const { data, error, isError, isLoading } = useContractReads({
     contracts: [

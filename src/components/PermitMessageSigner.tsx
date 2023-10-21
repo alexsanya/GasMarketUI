@@ -32,14 +32,15 @@ const MessageSigner = ({ address, token, value, lifetime, onSuccess }) => {
     }
   }, [isSuccess])
 
+  useEffect(() => {
+    if (domain && message && !isLoading) {
+      signTypedData()
+    }
+  }, [domain, message])
 
-  return (
-    <button
-      onClick={() => signTypedData()}
-    >
-      Publish order
-    </button>
-  )
+
+
+  return null
 }
 
 export default MessageSignerWithAddress 
