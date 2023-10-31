@@ -12,7 +12,7 @@ import { Providers } from '../../app/providers'
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function Order() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
