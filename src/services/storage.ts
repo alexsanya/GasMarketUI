@@ -25,9 +25,9 @@ interface Page<Type> {
   data: Type[]
 }
 
-interface Pagination {
+export interface Pagination {
   offset?: number;
-  count?: number;
+  limit?: number;
 }
 
 interface Range<Type> {
@@ -35,7 +35,7 @@ interface Range<Type> {
   to: Type
 }
 
-interface Filter {
+export interface Filter {
   signers?: string[],
   tokens?: string[],
   value?: Range<BigInt>,

@@ -1,5 +1,5 @@
-import { Sequelize, DataTypes } from 'sequelize';
-import { Storage, Status } from './storage'
+import { Sequelize, DataTypes, Op } from 'sequelize';
+import { Storage, Status, Filter, Pagination } from './storage'
 
 const sequelize = new Sequelize('sqlite::memory:');
 
@@ -15,7 +15,7 @@ const Order = sequelize.define('Order', {
 
 class SqliteStorage extends Storage {
 
-  synced: boolean = false;
+  synced: boolean = false
 
   async sync() {
     if (!this.synced) {
@@ -26,6 +26,16 @@ class SqliteStorage extends Storage {
 
   async store(order: Order): Promise<Result> {
     await this.sync()
+    const existingOrder = await Order.findOne({
+      where: {
+        rewardSignature: order.rewardSignature
+      }
+    })
+    if (existingOrder) {
+      return {
+        status: Status.FAILURE
+      }
+    }
     try {
       await Order.create(order)
       return {
@@ -39,10 +49,25 @@ class SqliteStorage extends Storage {
     }
   }
 
+  getRangeQuery(from, to) {
+    return {
+      ...((from && to) ? {[Op.between]: [from, to]} : {}),
+      ...((from && !to) ? {[Op.gte]: from} : {}),
+      ...((!from && to) ? {[Op.lte]: to} : {})
+    }
+  }
+
   async find(filter: Filter, pagination: Pagination): Promise<Page<Order>> {
     await this.sync()
     const result = await Order.findAndCountAll({
-
+      where: {
+        ...(filter.signers ? {signer: filter.signers} : {}),
+        ...(filter.tokens ? {token: filter.tokens} : {}),
+        ...(filter.value ? { value: this.getRangeQuery(filter.value.from, filter.value.to) } : {}),
+        ...(filter.deadline ? { deadline: this.getRangeQuery(filter.deadline.from, filter.deadline.to) } : {}),
+        ...(filter.reward ? { reward: this.getRangeQuery(filter.reward.from, filter.reward.to) } : {}),
+      },
+      ...pagination
     })
     console.log(result)
     return result
