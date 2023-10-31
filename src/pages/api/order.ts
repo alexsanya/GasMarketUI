@@ -15,9 +15,9 @@ export default async function handler(
     return res.status(404)
   }
   console.log(req.body)
-  const { order, isValid } = await validator.validate(req.body)
+  const { order, errors, isValid } = await validator.validate(req.body)
   if (!isValid) {
-    return res.status(400).json({ status: 'BAD REQUEST' })
+    return res.status(400).json({ status: 'BAD REQUEST', errors })
   }
   try {
     const { status } = await storage.store(order)
