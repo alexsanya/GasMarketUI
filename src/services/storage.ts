@@ -26,8 +26,8 @@ interface Page<Type> {
 }
 
 interface Pagination {
-  offset: number;
-  count: number;
+  offset?: number;
+  count?: number;
 }
 
 interface Range<Type> {
