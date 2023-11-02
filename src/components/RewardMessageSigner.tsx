@@ -42,10 +42,10 @@ const RewardMessageSigner = ({address, permitSignature, value, onSuccess}) => {
 
 
   useEffect(() => {
-    if (permitSignature && value) {
+    if (domain && permitSignature && value && !isLoading) {
       signTypedData()
     }
-  }, [value, permitSignature])
+  }, [domain, value, permitSignature])
 
   return null
 }

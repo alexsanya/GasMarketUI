@@ -1,2 +1,2 @@
-export const GAS_BROKER_ADDRESS = "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC"
+export const GAS_BROKER_ADDRESS = "0xbeC6419cD931e29ef41157fe24C6928a0C952f0b"
 

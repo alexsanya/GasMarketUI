@@ -50,9 +50,9 @@ export function OrderForm() {
     const order = {
       signer: permitMessage.owner,
       token,
-      value,
-      deadline: permitMessage.deadline.toString(),
-      reward,
+      value: parseInt(value),
+      deadline: parseInt(permitMessage.deadline),
+      reward: parseInt(reward),
       permitSignature,
       rewardSignature
     }
