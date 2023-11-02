@@ -1,9 +1,15 @@
 import { Sequelize, DataTypes, Op } from 'sequelize';
 import { Storage, Status, Filter, Pagination } from './storage'
+import { keccak256 } from 'viem'
+
 
 const sequelize = new Sequelize('sqlite::memory:');
 
 const Order = sequelize.define('Order', {
+  permitHash: {
+    type: DataTypes.STRING,
+    primaryKey: true
+  },
   signer: DataTypes.STRING,
   token: DataTypes.STRING,
   value: DataTypes.INTEGER,
@@ -26,9 +32,10 @@ class SqliteStorage extends Storage {
 
   async store(order: Order): Promise<Result> {
     await this.sync()
+    const permitHash = keccak256(order.permitSignature)
     const existingOrder = await Order.findOne({
       where: {
-        rewardSignature: order.rewardSignature
+        permitHash
       }
     })
     if (existingOrder) {
@@ -37,7 +44,10 @@ class SqliteStorage extends Storage {
       }
     }
     try {
-      await Order.create(order)
+      await Order.create({
+        ...order,
+        permitHash
+      })
       return {
         status: Status.SUCCESS
       }

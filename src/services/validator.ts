@@ -24,7 +24,6 @@ export const localFork = defineChain({
   }
 })
 
-
 interface ValidationResult {
   isValid: boolean,
   errors?: any,
