@@ -14,7 +14,6 @@ export default async function handler(
   if (req.method !== 'POST') {
     return res.status(404)
   }
-  console.log(req.body)
   const { order, errors, isValid } = await validator.validate(req.body)
   if (!isValid) {
     return res.status(400).json({ status: 'BAD REQUEST', errors })
@@ -22,6 +21,7 @@ export default async function handler(
   try {
     const { status } = await storage.store(order)
     if (status === Status.SUCCESS) {
+      res?.socket?.server?.io?.emit("message", order)
       res.status(201).json({ status: 'SUCCESS' })
     } else {
       throw new Error('Failed to create order')
