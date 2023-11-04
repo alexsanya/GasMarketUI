@@ -1,6 +1,7 @@
 import { Sequelize, DataTypes, Op } from 'sequelize';
 import { Storage, Status, Filter, Pagination } from './storage'
 import { keccak256 } from 'viem'
+import { ORDER_MAX_TTL_SEC } from '../config'
 
 
 const sequelize = new Sequelize('sqlite::memory:');
@@ -17,7 +18,11 @@ const Order = sequelize.define('Order', {
   reward: DataTypes.INTEGER,
   permitSignature: DataTypes.STRING,
   rewardSignature: DataTypes.STRING
-});
+})
+
+const Block = sequelize.define('Block', {
+  timestamp: DataTypes.NUMBER
+})
 
 class SqliteStorage extends Storage {
 
@@ -26,6 +31,7 @@ class SqliteStorage extends Storage {
   async sync() {
     if (!this.synced) {
       await Order.sync()
+      await Block.sync()
       this.synced = true
     }
   }
@@ -81,6 +87,29 @@ class SqliteStorage extends Storage {
     })
     console.log(result)
     return result
+  }
+
+  async getLatestBlock() {
+    await this.sync()
+    return (await Block.max('timestamp')) || 16805030
+  }
+
+  async cleanUp(timestamp: BigInt, closedOrders: string[]) {
+    await this.sync()
+    await Order.destroy({
+      where: {
+        [Op.or]: {
+          permitHash: closedOrders,
+          deadline: {
+            [Op.lt]: timestamp
+          },
+          createdAt: {
+            [Op.lt]: new Date(Date.now() - ORDER_MAX_TTL_SEC * 1e3)
+          }
+        }
+      }
+    })
+    await Block.create(timestamp)
   }
 }
 

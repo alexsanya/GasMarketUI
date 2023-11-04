@@ -91,10 +91,8 @@ class Validator {
       functionName: 'verifyReward',
       args: [
         signer,
-        {
-          permitHash,
-          value: reward
-        },
+        reward,
+        permitHash,
         rewardV,
         rewardR,
         rewardS

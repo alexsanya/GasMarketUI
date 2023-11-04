@@ -54,6 +54,19 @@
       "type": "error"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "permitHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "Swap",
+      "type": "event"
+    },
+    {
       "inputs": [],
       "name": "DOMAIN_SEPARATOR",
       "outputs": [
@@ -223,21 +236,14 @@
           "type": "address"
         },
         {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "value",
-              "type": "uint256"
-            },
-            {
-              "internalType": "bytes32",
-              "name": "permitHash",
-              "type": "bytes32"
-            }
-          ],
-          "internalType": "struct Reward",
-          "name": "reward",
-          "type": "tuple"
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "permitHash",
+          "type": "bytes32"
         },
         {
           "internalType": "uint8",
