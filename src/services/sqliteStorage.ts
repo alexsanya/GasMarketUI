@@ -1,10 +1,12 @@
-import { Sequelize, DataTypes, Op } from 'sequelize';
+import { Sequelize, DataTypes, Op } from 'sequelize'
 import { Storage, Status, Filter, Pagination } from './storage'
 import { keccak256 } from 'viem'
-import { ORDER_MAX_TTL_SEC } from '../config'
+import { ORDER_MAX_TTL_SEC, DB_FILE } from '../config'
 
-
-const sequelize = new Sequelize('sqlite::memory:');
+const sequelize = new Sequelize({
+  storage: DB_FILE,
+  dialect: 'sqlite'
+});
 
 const Order = sequelize.define('Order', {
   permitHash: {
@@ -85,8 +87,13 @@ class SqliteStorage extends Storage {
       },
       ...pagination
     })
-    console.log(result)
-    return result
+    return {
+      count: Math.min(pagination?.limit || result.rows.length, result.rows.length),
+      limit: pagination.limit || result.rows.length,
+      offset: pagination.offset || 0,
+      total: result.count,
+      data: result.rows
+    }
   }
 
   async getLatestBlock() {
@@ -109,7 +116,7 @@ class SqliteStorage extends Storage {
         }
       }
     })
-    await Block.create(timestamp)
+    await Block.create({timestamp})
   }
 }
 

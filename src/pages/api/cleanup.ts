@@ -11,20 +11,22 @@ export default async function handler(
     return res.status(404)
   }
 
+  const latestCheckedBlock = await storage.getLatestBlock()
+
   const logs = await publicClient.getLogs({  
     address: GAS_BROKER_ADDRESS,
     event: parseAbiItem('event Swap(bytes32 permitHash)'), 
-    fromBlock: `${await storage.getLatestBlock()}`,
+    fromBlock: `${latestCheckedBlock}`,
     toBlock: 	'latest'
   })
-
-  console.log(logs)
+  
+  const closedOrders = logs.map(event => event.args.permitHash)
 
   const block = await publicClient.getBlock()
 
-  console.log(`Cleaning orders starting from block ${block.timestamp}`)
+  console.log(`Cleaning orders starting from block ${latestCheckedBlock}`)
 
-  await storage.cleanUp(block.timestamp, [])
+  await storage.cleanUp(block.timestamp, closedOrders)
 
   res.status(200).json(logs)
 }

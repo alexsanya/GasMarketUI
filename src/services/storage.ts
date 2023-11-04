@@ -44,6 +44,7 @@ export interface Filter {
 }
 
 export abstract class Storage {
-  abstract async store(order: Order): Promise<Result>;
-  abstract async find(filter: Filter, pagination: Pagination): Promise<Page<Order>>;
+  abstract async store(order: Order): Promise<Result>
+  abstract async find(filter: Filter, pagination: Pagination): Promise<Page<Order>>
+  abstract async cleanUp(timestamp: BigInt, closedOrders: string[]) 
 }
