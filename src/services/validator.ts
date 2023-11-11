@@ -47,7 +47,7 @@ export const publicClient = createPublicClient({
   transport: http()
 })
 
-function splitSignature(signatureHex: string) {
+export function splitSignature(signatureHex: string) {
   const { r, s } = secp256k1.Signature.fromCompact(signatureHex.slice(2, 130))
   const v = fromHex(`0x${signatureHex.slice(130)}`, 'number')
   return [v, toHex(r), toHex(s)]
