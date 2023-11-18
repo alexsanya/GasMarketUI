@@ -1,15 +1,16 @@
 import { z } from 'zod'
+import { polygon } from 'wagmi/chains'
 import { secp256k1 } from '@noble/curves/secp256k1'
 import { Order } from './storage'
 import { GAS_BROKER_ADDRESS } from '../config'
 import { MIN_DEADLINE, ACCOUNT_ADDRESS_REGEX, SIGNATURE_REGEX } from '../constants'
 
-import { defineChain, createPublicClient, http, keccak256, toHex, fromHex } from 'viem'
+import { defineChain, createPublicClient, http, keccak256 } from 'viem'
 import { mainnet } from 'viem/chains'
 import gasBrokerABI from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 export const localFork = defineChain({
-  id: 1,
+  id: polygon.id,
   name: 'Local',
   network: 'local',
   nativeCurrency: {
@@ -30,7 +31,6 @@ interface ValidationResult {
   order?: Order
 }
 
-
 const schema = z.object({
   signer: z.string().regex(ACCOUNT_ADDRESS_REGEX),
   token: z.string().regex(ACCOUNT_ADDRESS_REGEX),
@@ -48,13 +48,18 @@ export const publicClient = createPublicClient({
 })
 
 export function splitSignature(signatureHex: string) {
-  const { r, s } = secp256k1.Signature.fromCompact(signatureHex.slice(2, 130))
-  const v = fromHex(`0x${signatureHex.slice(130)}`, 'number')
-  return [v, toHex(r), toHex(s)]
+  const rawSig = signatureHex.split('x')[1]
+  return [
+    `0x${rawSig.slice(-2)}`,
+    `0x${rawSig.slice(0,64)}`, 
+    `0x${rawSig.slice(64,-2)}`
+  ]
 }
 
 class Validator {
   async validate(input: {[key: string]: any}): Promise<ValidationResult> {
+
+
 
     // validate schema
     const response = schema.safeParse(input);
@@ -83,6 +88,16 @@ class Validator {
         permitR,
         permitS
       ]
+    })
+
+
+    console.log({
+      signer,
+      reward,
+      permitHash,
+      rewardV,
+      rewardR,
+      rewardS
     })
 
     const verifyReward = publicClient.readContract({

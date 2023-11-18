@@ -3,6 +3,7 @@ import { useContractReads } from 'wagmi'
 import { polygon } from 'wagmi/chains'
 
 import domainABI from '../resources/domainABI.json' assert { type: 'json' }
+import legacyDomainABI from '../resources/legacyDomainABI.json' assert { type: 'json' }
 
 function useDomain(address) {
 
@@ -17,8 +18,8 @@ function useDomain(address) {
       },
       {
         address: address,
-        abi: domainABI,
-        functionName: 'version'
+        abi: legacyDomainABI,
+        functionName: 'EIP712_VERSION'
       }
 
     ]
@@ -30,8 +31,8 @@ function useDomain(address) {
     setDomain({
       name,
       version,
-      chainId: polygon.id,
-      verifyingContract: address
+      verifyingContract: address,
+      salt: '0x0000000000000000000000000000000000000000000000000000000000000089'
     })
 
 

@@ -12,12 +12,12 @@ function useEstimateEth(token, value) {
     args: [token, value]
   })
 
-  const [ amount, setAmount ] = useState('XZ')
+  const [ amount, setAmount ] = useState(0n)
 
 
   useEffect(() => {
     console.log({ethRequired})
-    setAmount(ethRequired.toString())
+    setAmount(ethRequired)
   },
   [ethRequired])
 

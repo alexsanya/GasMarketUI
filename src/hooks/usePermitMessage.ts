@@ -21,7 +21,7 @@ function usePermitMessage(address, token, value, lifetime) {
     setMessage({
       owner: address,
       spender: GAS_BROKER_ADDRESS,
-      value,
+      value: BigInt(value),
       nonce,
       deadline: block.timestamp + BigInt(lifetime)
     })

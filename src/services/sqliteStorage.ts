@@ -98,7 +98,7 @@ class SqliteStorage extends Storage {
 
   async getLatestBlock() {
     await this.sync()
-    return (await Block.max('timestamp')) || 16805030
+    return (await Block.max('timestamp')) || 50029820
   }
 
   async cleanUp(timestamp: BigInt, closedOrders: string[]) {
