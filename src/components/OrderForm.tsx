@@ -13,6 +13,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
+import { USDC_ADDRESS, DEFAULT_ORDER_TTL_SEC } from '../config';
+
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
 
@@ -111,6 +113,7 @@ export function OrderForm() {
             id="token"
             label="Token address"
             name="token"
+            defaultValue={USDC_ADDRESS}
             autoComplete="token"
             autoFocus
           />
@@ -142,6 +145,7 @@ export function OrderForm() {
             label="Lifetime"
             name="lifetime"
             autoComplete="value"
+            defaultValue={DEFAULT_ORDER_TTL_SEC}
             autoFocus
           />
           <Button

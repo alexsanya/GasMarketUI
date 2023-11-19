@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { polygon } from 'wagmi/chains'
 import { secp256k1 } from '@noble/curves/secp256k1'
 import { Order } from './storage'
-import { GAS_BROKER_ADDRESS } from '../config'
+import { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } from '../config'
 import { MIN_DEADLINE, ACCOUNT_ADDRESS_REGEX, SIGNATURE_REGEX } from '../constants'
 
 import { defineChain, createPublicClient, http, keccak256 } from 'viem'
@@ -59,8 +59,6 @@ export function splitSignature(signatureHex: string) {
 class Validator {
   async validate(input: {[key: string]: any}): Promise<ValidationResult> {
 
-
-
     // validate schema
     const response = schema.safeParse(input);
     if (!response.success) {
@@ -70,72 +68,40 @@ class Validator {
       }
     }
     const { signer, token, value, deadline, reward, permitSignature, rewardSignature } = response.data
-
-    // validate using on-chain data
     const [permitV, permitR, permitS] = splitSignature(permitSignature)
     const [rewardV, rewardR, rewardS] = splitSignature(rewardSignature)
-    const permitHash = keccak256(permitSignature)
-    const verifyPermit = publicClient.readContract({
-      address: GAS_BROKER_ADDRESS,
-      abi: gasBrokerABI,
-      functionName: 'verifyPermit',
-      args: [
-        signer,
-        token,
-        value,
-        deadline,
-        permitV,
-        permitR,
-        permitS
-      ]
-    })
-
-
-    console.log({
-      signer,
-      reward,
-      permitHash,
-      rewardV,
-      rewardR,
-      rewardS
-    })
-
-    const verifyReward = publicClient.readContract({
-      address: GAS_BROKER_ADDRESS,
-      abi: gasBrokerABI,
-      functionName: 'verifyReward',
-      args: [
-        signer,
-        reward,
-        permitHash,
-        rewardV,
-        rewardR,
-        rewardS
-      ]
-    })
 
     try {
-      const [permitStatus, isRewardValid] = await Promise.all([verifyPermit, verifyReward])
-      if (permitStatus !== 'VALID') {
-        return {
-          isValid: false,
-          errors: permitStatus
-        }
-      }
-      if (!isRewardValid) {
-        return {
-          isValid: false,
-          errors: 'Reward signature is invalid'
-        }
-      }
-    } catch (errors) {
-      console.log(errors)
+      await publicClient.simulateContract({
+        address: GAS_BROKER_ADDRESS,
+        abi: gasBrokerABI,
+        functionName: 'swap', 
+        account: GAS_PROVIDER_ADDRESS,
+        args: [
+          signer,
+          token,
+          value,
+          deadline,
+          reward,
+          permitV,
+          permitR,
+          permitS,
+          rewardV,
+          rewardR,
+          rewardS
+        ],
+        value: await publicClient.getBalance({ 
+          address: GAS_PROVIDER_ADDRESS
+        })
+      })
+      console.log('Order is valid')
+    } catch (error) {
+      console.log(error)
       return {
         isValid: false,
-        errors
+        error
       }
     }
-
 
     return {
       isValid: true,

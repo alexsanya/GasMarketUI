@@ -6,42 +6,47 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import LinkIcon from '@mui/icons-material/Link';
 import Typography from '@mui/material/Typography';
-import { usePrepareContractWrite, useContractWrite } from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useFeeData } from 'wagmi'
 
 import { GAS_BROKER_ADDRESS, EXPLORER_URL } from '../config'
 import useDomain from '../hooks/useDomain'
 import useDecimals from '../hooks/useDecimals'
 import { splitSignature } from '../services/validator'
 import useEstimateEth from '../hooks/useEstimateEth'
+import useEstimateSwapGas from '../hooks/useEstimateSwapGas'
 import formatETH from '../utils/formatETH'
 import gasBrokerABI from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 export function OrderCard({order}) {
+  const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const domain = useDomain(order.token)
   const decimals = useDecimals(order.token)
   const ethAmount = useEstimateEth(order.token, order.value - order.reward)
 
   const [permitV, permitR, permitS] = splitSignature(order.permitSignature)
   const [rewardV, rewardR, rewardS] = splitSignature(order.rewardSignature)
+  const args = [
+    order.signer,
+    order.token,
+    order.value,
+    order.deadline,
+    order.reward,
+    permitV,
+    permitR,
+    permitS,
+    rewardV,
+    rewardR,
+    rewardS
+  ]
+  const value = ethAmount && (BigInt(ethAmount) + BigInt(ethAmount)/10n)
+  const swapGas = useEstimateSwapGas(args, value)
 
   const { config, error } = usePrepareContractWrite({
     address: GAS_BROKER_ADDRESS,
     abi: gasBrokerABI,
     functionName: 'swap',
-    args: [
-      order.signer,
-      order.token,
-      order.value,
-      order.deadline,
-      order.reward,
-      permitV,
-      permitR,
-      permitS,
-      rewardV,
-      rewardR,
-      rewardS
-    ],
-    value: BigInt(ethAmount) + BigInt(ethAmount)/10n
+    args,
+    value
   })
 
 
@@ -68,6 +73,18 @@ export function OrderCard({order}) {
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           ETH required: {ethAmount ? formatETH(ethAmount) : 'Estimating...'}
         </Typography>
+        <Typography variant="body2">
+          Gas required: {swapGas && swapGas.toString()}
+        </Typography>
+        <Typography variant="body2">
+          Gas price: {feeData && feeData?.gasPrice.toString()}
+        </Typography>
+        <Typography variant="body2">
+          Transaction cost in ETH: {swapGas && feeData?.gasPrice && formatETH(feeData?.gasPrice * BigInt(swapGas))}
+        </Typography>
+
+
+
         <Typography variant="body2">
           Reward: {decimals && (order.reward / 10**decimals)} {domain && domain.name}
         </Typography>
