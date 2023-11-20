@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
@@ -12,8 +12,13 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { useFeeData } from 'wagmi'
+import formatETH from '../utils/formatETH'
 
-import { USDC_ADDRESS, DEFAULT_ORDER_TTL_SEC } from '../config';
+import useMaticPrice from "../hooks/useMaticPrice"
+import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
+
+import { USDC_ADDRESS, DEFAULT_ORDER_TTL_SEC, MIN_COMISSION_USDC } from '../config';
 
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
@@ -26,6 +31,18 @@ export function OrderForm() {
   const [permitMessage, setPermitMessage] = useState(null)
   const [successTabOpened, setSuccessTabOpened] = useState(false)
   const [errorTabOpened, setErrorTabOpened] = useState(false)
+  const [suggestedReward, setSuggestedReward] = useState(MIN_COMISSION_USDC)
+  const maticPrice = useMaticPrice()
+  const transactionCostInUSD = useTransactionCostInUSD()
+
+  const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
+
+
+  useEffect(() => {
+    console.log('Setting value: ', transactionCostInUSD * 3)
+    setSuggestedReward(transactionCostInUSD * 3)
+  }, [transactionCostInUSD])
+
 
   const orderForm = useRef();
 
@@ -105,6 +122,16 @@ export function OrderForm() {
         <Typography component="h1" variant="h5">
           Make an order
         </Typography>
+        <Typography variant="body2">
+          Gas price: {feeData && formatETH(feeData?.gasPrice)}
+        </Typography>
+        <Typography variant="body2">
+          MATIC price: {maticPrice} USD
+        </Typography>
+        <Typography variant="body2">
+          Transaction cost: {transactionCostInUSD} USD
+        </Typography>
+
         <Box ref={orderForm} component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -136,6 +163,7 @@ export function OrderForm() {
             name="reward"
             autoComplete="value"
             autoFocus
+            defaultValue={suggestedReward}
           />
           <TextField
             margin="normal"
