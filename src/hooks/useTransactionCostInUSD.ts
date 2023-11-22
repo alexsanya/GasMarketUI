@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { SWAP_GAS_REQUIRED } from '../config'
 import useMaticPrice from '../hooks/useMaticPrice'
 
-function useTransactionCostInUSD(weiAmount) {
+function useTransactionCostInUSD() {
 
   const [transactionCostInEth, setTransactionCostInEth] = useState(null)
   const [transactionCostInUSD, setTransactionCostInUSD] = useState(null)

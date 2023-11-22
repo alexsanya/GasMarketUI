@@ -1,14 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -40,11 +35,13 @@ export function OrderForm() {
 
   useEffect(() => {
     console.log('Setting value: ', transactionCostInUSD * 3)
-    setSuggestedReward(transactionCostInUSD * 3)
+    setSuggestedReward(Math.max(transactionCostInUSD * 3, MIN_COMISSION_USDC) / 10**6)
   }, [transactionCostInUSD])
 
 
   const orderForm = useRef();
+
+
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -52,8 +49,8 @@ export function OrderForm() {
 
     setOrderData({
       token: data.get('token'),
-      value: data.get('value'),
-      reward: data.get('reward'),
+      value: Math.round(parseFloat(data.get('value')) * 10**6),
+      reward: Math.round(parseFloat(data.get('reward')) * 10**6),
       lifetime: data.get('lifetime')
     })
 
@@ -69,9 +66,9 @@ export function OrderForm() {
     const order = {
       signer: permitMessage.owner,
       token,
-      value: parseInt(value),
+      value,
       deadline: parseInt(permitMessage.deadline),
-      reward: parseInt(reward),
+      reward,
       permitSignature,
       rewardSignature
     }
@@ -130,6 +127,9 @@ export function OrderForm() {
         </Typography>
         <Typography variant="body2">
           Transaction cost: {transactionCostInUSD} USD
+        </Typography>
+        <Typography variant="body2">
+          Suggested reward: {suggestedReward} USD
         </Typography>
 
         <Box ref={orderForm} component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
