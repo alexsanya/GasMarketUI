@@ -34,13 +34,13 @@ export function OrderForm() {
 
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
 
+  const orderForm = useRef();
 
   useEffect(() => {
     setSuggestedReward(Math.max(transactionCostInUSD! * 3, MIN_COMISSION_USDC) / 10**6)
+    orderForm.current.elements["reward"].value = suggestedReward
   }, [transactionCostInUSD])
 
-
-  const orderForm = useRef();
 
 
 
@@ -164,7 +164,6 @@ export function OrderForm() {
             name="reward"
             autoComplete="value"
             autoFocus
-            defaultValue={suggestedReward}
           />
           <TextField
             margin="normal"
