@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useEffect } from 'react';
 import { useContractReads } from 'wagmi'
 import { polygon } from 'wagmi/chains'

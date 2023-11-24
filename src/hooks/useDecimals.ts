@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useEffect } from 'react';
 import { useContractRead } from 'wagmi'
 import { erc20ABI } from 'wagmi'

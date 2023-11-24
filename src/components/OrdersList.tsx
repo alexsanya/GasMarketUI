@@ -4,7 +4,7 @@ export function OrdersList({orders}) {
   console.log({orders})
   return (<>
     {
-      orders.map(order => <OrderCard order={order}/>)
+      orders.map((order, i) => <OrderCard key={i} order={order}/>)
     }  
   </>)
 }

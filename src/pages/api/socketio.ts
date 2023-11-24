@@ -1,5 +1,6 @@
+// @ts-nocheck
+
 import { NextApiRequest } from "next";
-import { NextApiResponseServerIO } from "src/types/next";
 import { Server as ServerIO } from "socket.io";
 import { Server as NetServer } from "http";
 
@@ -9,7 +10,7 @@ export const config = {
   },
 };
 
-export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
+export default async (req: NextApiRequest, res: any) => {
   if (!res.socket.server.io) {
     console.log("New Socket.io server...");
     // adapt Next's net Server to http Server

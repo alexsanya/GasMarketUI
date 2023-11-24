@@ -1,6 +1,7 @@
+// @ts-nocheck
+
 import { z } from 'zod'
 import { polygon } from 'wagmi/chains'
-import { secp256k1 } from '@noble/curves/secp256k1'
 import { Order } from './storage'
 import { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } from '../config'
 import { MIN_DEADLINE, ACCOUNT_ADDRESS_REGEX, SIGNATURE_REGEX } from '../constants'

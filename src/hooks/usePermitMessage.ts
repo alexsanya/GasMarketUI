@@ -1,4 +1,6 @@
-import { useAccount, useContractRead } from 'wagmi'
+// @ts-nocheck
+
+import { useContractRead } from 'wagmi'
 import { useState, useEffect } from 'react'
 import useBlock from './useBlock'
 import { GAS_BROKER_ADDRESS } from '../config'

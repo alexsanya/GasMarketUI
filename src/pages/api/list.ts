@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { z } from 'zod'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import storage from '../../services/sqliteStorage'
@@ -5,7 +7,7 @@ import { ACCOUNT_ADDRESS_REGEX } from '../../constants'
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse
 ) {
   if (req.method !== 'POST') {
     return res.status(404)

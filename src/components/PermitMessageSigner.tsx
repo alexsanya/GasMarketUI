@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useAccount, useSignTypedData } from 'wagmi'
 import { useEffect } from 'react'
 

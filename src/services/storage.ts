@@ -1,4 +1,4 @@
-interface Order {
+export interface Order {
   signer: string,
   token: string,
   value: BigInt,
@@ -13,12 +13,12 @@ export enum Status {
   FAILURE
 }
 
-interface Result {
-  status: STATUS,
+export interface Result {
+  status: Status,
   error?: any
 }
 
-interface Page<Type> {
+export interface Page<Type> {
   offset: number;
   count: number;
   total: number;
@@ -44,7 +44,7 @@ export interface Filter {
 }
 
 export abstract class Storage {
-  abstract async store(order: Order): Promise<Result>
-  abstract async find(filter: Filter, pagination: Pagination): Promise<Page<Order>>
-  abstract async cleanUp(timestamp: BigInt, closedOrders: string[]) 
+  abstract store(order: Order): Promise<Result>
+  abstract find(filter: Filter, pagination: Pagination): Promise<Page<Order>>
+  abstract cleanUp(timestamp: BigInt, closedOrders: string[]) 
 }

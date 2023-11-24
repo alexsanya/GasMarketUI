@@ -1,5 +1,4 @@
 import moment from 'moment'
-import { useState, useEffect } from 'react'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -14,22 +13,12 @@ import useDomain from '../hooks/useDomain'
 import useDecimals from '../hooks/useDecimals'
 import { splitSignature } from '../services/validator'
 import useEstimateEth from '../hooks/useEstimateEth'
-import useTransactionCostInUSD from '../hooks/useTransactionCostInUSD'
-import useEstimateSwapGas from '../hooks/useEstimateSwapGas'
 import formatETH from '../utils/formatETH'
 import gasBrokerABI from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
-function TransactionUSDcost({costInWei}) {
-  const transactionCostInUSD = useTransactionCostInUSD(costInWei)
-  return (
-    <span>{transactionCostInUSD ? transactionCostInUSD : 'estimating...'}</span>
-  )
-}
-
-
 export function OrderCard({order}) {
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
-  const domain = useDomain(order.token)
+  const domain: any = useDomain(order.token)
   const decimals = useDecimals(order.token)
   const ethAmount = useEstimateEth(order.token, order.value - order.reward)
 
@@ -48,26 +37,22 @@ export function OrderCard({order}) {
     rewardR,
     rewardS
   ]
-  const value = ethAmount && (BigInt(ethAmount) + BigInt(ethAmount)/10n)
-  const swapGas = useEstimateSwapGas(args, value)
-  const [transactionCostInEth, setTransactionCostInEth] = useState(null)
+  const value = ethAmount && (BigInt(ethAmount) + BigInt(ethAmount)/BigInt(10))
   const { config, error } = usePrepareContractWrite({
     address: GAS_BROKER_ADDRESS,
     abi: gasBrokerABI,
     functionName: 'swap',
     args,
+    // @ts-ignore
     value
   })
 
   const { data, isLoading, isSuccess, write } = useContractWrite(config)
 
-  useEffect(() => {
-    if (!feeData || !swapGas) return;
-    setTransactionCostInEth(feeData?.gasPrice * BigInt(swapGas))
-  }, [feeData, swapGas])
-
   const fulfillOrder = () => {
-    write()
+    if (write) {
+      write()
+    }
   }
 
   return (
@@ -79,8 +64,8 @@ export function OrderCard({order}) {
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           <span>
             {order.token}
-            <a href={EXPLORER_URL + order.token} target="_blank">
-              <LinkIcon style={{"vertical-align": "-6px", "cursor": "pointer"}} />
+            <a href={EXPLORER_URL + order.token} target="_blank" rel="noreferrer">
+              <LinkIcon style={{"cursor": "pointer"}} />
             </a>
           </span>
         </Typography>

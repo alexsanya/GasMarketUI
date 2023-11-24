@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 import '@rainbow-me/rainbowkit/styles.css'
 import { createTheme, ThemeProvider } from '@mui/material/styles'

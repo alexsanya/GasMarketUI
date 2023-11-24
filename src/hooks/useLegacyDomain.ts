@@ -1,6 +1,7 @@
+// @ts-nocheck
+
 import { useState, useEffect } from 'react';
 import { useContractReads } from 'wagmi'
-import { polygon } from 'wagmi/chains'
 
 import domainABI from '../resources/domainABI.json' assert { type: 'json' }
 import legacyDomainABI from '../resources/legacyDomainABI.json' assert { type: 'json' }

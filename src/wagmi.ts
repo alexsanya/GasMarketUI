@@ -7,11 +7,11 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 const walletConnectProjectId = 'b0f095af13dfdd0d24b7106ac0a821d7'
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, ...(process.env.NODE_ENV === 'development' ? [polygon] : [])],
+  [mainnet, polygon],
   [
     (process.env.NODE_ENV === 'development') ?
       jsonRpcProvider({
-        rpc: (chain) => ({
+        rpc: () => ({
           http: 'http://127.0.0.1:8545',
         }),
       }) :

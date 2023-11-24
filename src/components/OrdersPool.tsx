@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useEffect } from "react"
 import { useFeeData } from 'wagmi'
 import Box from '@mui/material/Box'

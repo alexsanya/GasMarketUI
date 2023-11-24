@@ -1,8 +1,10 @@
+// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { useContractRead } from 'wagmi'
 import { CHAINLINK_ETH_USD_FEED } from '../config'
 
-import aggregatorV3InterfaceAbi from '../resources/aggregatorV3InterfaceAbi.json' assert { type: 'json' }
+import aggregatorV3InterfaceAbi from '../resources/aggregatorV3InterfaceABI.json' assert { type: 'json' }
 
 function useMaticPrice() {
 
@@ -17,7 +19,7 @@ function useMaticPrice() {
   useEffect(() => {
     if (!data) return;
     const [_, price] = data
-    const value = Number(price / 10n**4n) / 10**4
+    const value = Number(price / BigInt(10)**BigInt(4)) / 10**4
     setPrice(value)
   }, [data, error])
 

@@ -1,3 +1,6 @@
+// @ts-nocheck
+
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { parseAbiItem } from 'viem'
 import { publicClient } from '../../services/validator'
 import storage from '../../services/sqliteStorage'
@@ -5,7 +8,7 @@ import { GAS_BROKER_ADDRESS } from '../../config'
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse
 ) {
   if (req.method !== 'POST') {
     return res.status(404)

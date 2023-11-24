@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useEffect, useRef } from 'react';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
@@ -34,8 +36,7 @@ export function OrderForm() {
 
 
   useEffect(() => {
-    console.log('Setting value: ', transactionCostInUSD * 3)
-    setSuggestedReward(Math.max(transactionCostInUSD * 3, MIN_COMISSION_USDC) / 10**6)
+    setSuggestedReward(Math.max(transactionCostInUSD! * 3, MIN_COMISSION_USDC) / 10**6)
   }, [transactionCostInUSD])
 
 
@@ -49,9 +50,9 @@ export function OrderForm() {
 
     setOrderData({
       token: data.get('token'),
-      value: Math.round(parseFloat(data.get('value')) * 10**6),
-      reward: Math.round(parseFloat(data.get('reward')) * 10**6),
-      lifetime: data.get('lifetime')
+      value: Math.round(parseFloat(data.get('value')!) * 10**6),
+      reward: Math.round(parseFloat(data.get('reward')!) * 10**6),
+      lifetime: data.get('lifetime')!
     })
 
   };

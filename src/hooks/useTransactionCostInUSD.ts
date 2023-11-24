@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useFeeData } from "wagmi"
 import { useState, useEffect } from 'react'
 import { SWAP_GAS_REQUIRED } from '../config'

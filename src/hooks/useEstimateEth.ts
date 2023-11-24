@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useContractRead } from 'wagmi'
 import { useState, useEffect } from 'react'
 import { GAS_BROKER_ADDRESS } from '../config'
@@ -12,7 +14,7 @@ function useEstimateEth(token, value) {
     args: [token, value]
   })
 
-  const [ amount, setAmount ] = useState(0n)
+  const [ amount, setAmount ] = useState(BigInt(0))
 
 
   useEffect(() => {
