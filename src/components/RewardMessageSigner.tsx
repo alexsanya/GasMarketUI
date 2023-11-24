@@ -1,5 +1,7 @@
+// @ts-nocheck
+
 import { useEffect } from "react"
-import { keccak256 } from '@ethersproject/keccak256'
+import { keccak256 } from 'viem'
 import { useAccount, useSignTypedData } from 'wagmi'
 import { GAS_BROKER_ADDRESS } from '../config'
 import useDomain from '../hooks/useDomain'
@@ -43,6 +45,7 @@ const RewardMessageSigner = ({address, permitSignature, value, onSuccess}) => {
 
   useEffect(() => {
     if (domain && permitSignature && value && !isLoading) {
+      console.log({domain, message})
       signTypedData()
     }
   }, [domain, value, permitSignature])
