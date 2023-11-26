@@ -19,7 +19,7 @@ export default async function handler(
   const logs = await publicClient.getLogs({  
     address: GAS_BROKER_ADDRESS,
     event: parseAbiItem('event Swap(bytes32 permitHash)'), 
-    fromBlock: `${latestCheckedBlock}`,
+    fromBlock: BigInt(latestCheckedBlock),
     toBlock: 	'latest'
   })
   
