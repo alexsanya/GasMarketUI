@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import storage from '../../services/sqliteStorage'
+import storage from '../../services/postgresStorage'
 import validator from '../../services/validator'
 import { Status } from '../../services/storage'
  

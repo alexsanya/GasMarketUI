@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import storage from '../../services/sqliteStorage'
+import storage from '../../services/postgresStorage'
 import { ACCOUNT_ADDRESS_REGEX } from '../../constants'
 
 export default async function handler(

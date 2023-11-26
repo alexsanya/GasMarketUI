@@ -1,13 +1,18 @@
 // @ts-nocheck
 
+import pg from 'pg';
 import { Sequelize, DataTypes, Op } from 'sequelize'
 import { Storage, Status, Order as OrderType, Filter, Page, Pagination, Result } from './storage'
 import { keccak256 } from 'viem'
 import { ORDER_MAX_TTL_SEC, DB_FILE } from '../config'
 
 const sequelize = new Sequelize({
-  storage: DB_FILE,
-  dialect: 'sqlite'
+  username: "orders_pool",
+  password: process.env.ORDERS_DB_PASSWORD,
+  host: process.env.DB_SERVER,
+  database: "orders_pool",
+  dialect: 'postgres',
+  dialectModule: pg
 });
 
 const Order = sequelize.define('Order', {
@@ -15,6 +20,7 @@ const Order = sequelize.define('Order', {
     type: DataTypes.STRING,
     primaryKey: true
   },
+  active: DataTypes.BOOLEAN,
   signer: DataTypes.STRING,
   token: DataTypes.STRING,
   value: DataTypes.INTEGER,
@@ -25,10 +31,10 @@ const Order = sequelize.define('Order', {
 })
 
 const Block = sequelize.define('Block', {
-  timestamp: DataTypes.NUMBER
+  timestamp: DataTypes.INTEGER
 })
 
-class SqliteStorage extends Storage {
+class PostgresStorage extends Storage {
 
   synced: boolean = false
 
@@ -56,7 +62,8 @@ class SqliteStorage extends Storage {
     try {
       await Order.create({
         ...order,
-        permitHash
+        permitHash,
+        active: true
       })
       return {
         status: Status.SUCCESS
@@ -81,6 +88,7 @@ class SqliteStorage extends Storage {
     await this.sync()
     const result = await Order.findAndCountAll({
       where: {
+        active: true,
         ...(filter.signers ? {signer: filter.signers} : {}),
         ...(filter.tokens ? {token: filter.tokens} : {}),
         ...(filter.value ? { value: this.getRangeQuery(filter.value.from, filter.value.to) } : {}),
@@ -105,7 +113,7 @@ class SqliteStorage extends Storage {
 
   async cleanUp(timestamp: BigInt, closedOrders: string[]) {
     await this.sync()
-    await Order.destroy({
+    await Order.update({ active: false }, {
       where: {
         [Op.or]: {
           permitHash: closedOrders,
@@ -122,4 +130,4 @@ class SqliteStorage extends Storage {
   }
 }
 
-export default new SqliteStorage()
+export default new PostgresStorage()

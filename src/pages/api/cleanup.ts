@@ -3,7 +3,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { parseAbiItem } from 'viem'
 import { publicClient } from '../../services/validator'
-import storage from '../../services/sqliteStorage'
+import storage from '../../services/postgresStorage'
 import { GAS_BROKER_ADDRESS } from '../../config'
 
 export default async function handler(
