@@ -1,29 +1,12 @@
 // @ts-nocheck
 
 import { z } from 'zod'
-import { polygon } from 'wagmi/chains'
 import { Order } from './storage'
 import { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } from '../config'
 import { MIN_DEADLINE, ACCOUNT_ADDRESS_REGEX, SIGNATURE_REGEX } from '../constants'
 
-import { defineChain, createPublicClient, http, keccak256 } from 'viem'
+import { viemClient } from '../wagmi'
 import gasBrokerABI from '../resources/gasBrokerABI.json' assert { type: 'json' }
-
-export const localFork = defineChain({
-  id: polygon.id,
-  name: 'Local',
-  network: 'local',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Ether',
-    symbol: 'ETH',
-  },
-  rpcUrls: {
-    default: {
-      http: ['http://127.0.0.1:8545']
-    }
-  }
-})
 
 interface ValidationResult {
   isValid: boolean,
@@ -40,12 +23,6 @@ const schema = z.object({
   reward: z.number().min(0),
   permitSignature: z.string(SIGNATURE_REGEX),
   rewardSignature: z.string(SIGNATURE_REGEX)
-})
-
-
-export const publicClient = createPublicClient({
-  chain: (process.env.NODE_ENV === 'development') ? localFork : polygon,
-  transport: http()
 })
 
 export function splitSignature(signatureHex: string) {
@@ -73,7 +50,7 @@ class Validator {
     const [rewardV, rewardR, rewardS] = splitSignature(rewardSignature)
 
     try {
-      await publicClient.simulateContract({
+      await viemClient.simulateContract({
         address: GAS_BROKER_ADDRESS,
         abi: gasBrokerABI,
         functionName: 'swap', 
@@ -91,7 +68,7 @@ class Validator {
           rewardR,
           rewardS
         ],
-        value: await publicClient.getBalance({ 
+        value: await viemClient.getBalance({ 
           address: GAS_PROVIDER_ADDRESS
         })
       })

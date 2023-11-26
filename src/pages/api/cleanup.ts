@@ -2,7 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { parseAbiItem } from 'viem'
-import { publicClient } from '../../services/validator'
+import { viemClient } from '../../wagmi'
 import storage from '../../services/postgresStorage'
 import { GAS_BROKER_ADDRESS } from '../../config'
 
@@ -16,7 +16,7 @@ export default async function handler(
 
   const latestCheckedBlock = await storage.getLatestBlock()
 
-  const logs = await publicClient.getLogs({  
+  const logs = await viemClient.getLogs({  
     address: GAS_BROKER_ADDRESS,
     event: parseAbiItem('event Swap(bytes32 permitHash)'), 
     fromBlock: BigInt(latestCheckedBlock),
@@ -25,11 +25,12 @@ export default async function handler(
   
   const closedOrders = logs.map(event => event.args.permitHash)
 
-  const block = await publicClient.getBlock()
+  const block = await viemClient.getBlock()
 
   console.log(`Cleaning orders starting from block ${latestCheckedBlock}`)
 
-  await storage.cleanUp(block.timestamp, closedOrders)
+  const networkId = await viemClient.getChainId()
+  await storage.cleanUp(block.timestamp, closedOrders, networkId)
 
   res.status(200).json(logs)
 }
