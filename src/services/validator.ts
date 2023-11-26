@@ -7,7 +7,6 @@ import { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } from '../config'
 import { MIN_DEADLINE, ACCOUNT_ADDRESS_REGEX, SIGNATURE_REGEX } from '../constants'
 
 import { defineChain, createPublicClient, http, keccak256 } from 'viem'
-import { mainnet } from 'viem/chains'
 import gasBrokerABI from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 export const localFork = defineChain({
@@ -44,7 +43,7 @@ const schema = z.object({
 
 
 export const publicClient = createPublicClient({
-  chain: (process.env.NODE_ENV === 'development') ? localFork : mainnet,
+  chain: (process.env.NODE_ENV === 'development') ? localFork : polygon,
   transport: http()
 })
 
