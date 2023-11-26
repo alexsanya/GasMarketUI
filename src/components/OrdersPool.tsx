@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { useState, useEffect } from "react"
-import { useFeeData } from 'wagmi'
+import { useFeeData, useNetwork } from 'wagmi'
 import Box from '@mui/material/Box'
 import { OrdersList } from "../components/OrdersList"
 import Typography from '@mui/material/Typography'
@@ -14,6 +14,7 @@ export function OrdersPool() {
   const [transactionCostInEth, setTransactionCostInEth] = useState(null)
   const [transactionCostInUSD, setTransactionCostInUSD] = useState(null)
   const maticPrice = useMaticPrice()
+  const { chain } = useNetwork()
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
 
   useEffect((): any => {
@@ -21,6 +22,9 @@ export function OrdersPool() {
       const query = {
         pagination: {
           limit: 10
+        },
+        filter: {
+          networkIds: [chain.id]
         }
       }
       const response = await fetch('/api/list', {

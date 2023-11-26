@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import moment from 'moment'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -43,7 +45,6 @@ export function OrderCard({order}) {
     abi: gasBrokerABI,
     functionName: 'swap',
     args,
-    // @ts-ignore
     value
   })
 

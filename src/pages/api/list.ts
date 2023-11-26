@@ -17,6 +17,7 @@ export default async function handler(
   const filterSchema = z.object({
     signers: z.array(z.string().regex(ACCOUNT_ADDRESS_REGEX)).optional(),
     tokens: z.array(z.string().regex(ACCOUNT_ADDRESS_REGEX)).optional(),
+    networkIds: z.array(z.number().min(1)).optional(),
     value: range.optional(),
     deadline: range.optional(),
     reward: range.optional()

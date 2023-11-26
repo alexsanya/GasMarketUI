@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useFeeData } from 'wagmi'
+import { useFeeData, useNetwork } from 'wagmi'
 import formatETH from '../utils/formatETH'
 
 import useMaticPrice from "../hooks/useMaticPrice"
@@ -33,6 +33,7 @@ export function OrderForm() {
   const transactionCostInUSD = useTransactionCostInUSD()
 
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
+  const { chain } = useNetwork()
 
   const orderForm = useRef();
 
@@ -66,6 +67,7 @@ export function OrderForm() {
     const { token, value, reward } = orderData
     const order = {
       signer: permitMessage.owner,
+      networkId: chain.id,
       token,
       value,
       deadline: parseInt(permitMessage.deadline),

@@ -7,10 +7,11 @@ import { keccak256 } from 'viem'
 import { ORDER_MAX_TTL_SEC, DB_FILE } from '../config'
 
 const sequelize = new Sequelize({
-  username: "orders_pool",
-  password: process.env.ORDERS_DB_PASSWORD,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
   host: process.env.DB_SERVER,
-  database: "orders_pool",
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
   dialect: 'postgres',
   dialectModule: pg
 });
@@ -20,6 +21,7 @@ const Order = sequelize.define('Order', {
     type: DataTypes.STRING,
     primaryKey: true
   },
+  networkId: DataTypes.INTEGER,
   active: DataTypes.BOOLEAN,
   signer: DataTypes.STRING,
   token: DataTypes.STRING,
@@ -89,6 +91,7 @@ class PostgresStorage extends Storage {
     const result = await Order.findAndCountAll({
       where: {
         active: true,
+        ...(filter.networkIds ? {networkId: filter.networkIds} : {}),
         ...(filter.signers ? {signer: filter.signers} : {}),
         ...(filter.tokens ? {token: filter.tokens} : {}),
         ...(filter.value ? { value: this.getRangeQuery(filter.value.from, filter.value.to) } : {}),
@@ -111,10 +114,11 @@ class PostgresStorage extends Storage {
     return (await Block.max('timestamp')) || 50029820
   }
 
-  async cleanUp(timestamp: BigInt, closedOrders: string[]) {
+  async cleanUp(timestamp: BigInt, closedOrders: string[], networkId: number) {
     await this.sync()
     await Order.update({ active: false }, {
       where: {
+        networkId,
         [Op.or]: {
           permitHash: closedOrders,
           deadline: {

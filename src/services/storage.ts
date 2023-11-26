@@ -36,6 +36,7 @@ interface Range<Type> {
 }
 
 export interface Filter {
+  networkIds?: number[],
   signers?: string[],
   tokens?: string[],
   value?: Range<BigInt>,

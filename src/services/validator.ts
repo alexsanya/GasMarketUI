@@ -33,6 +33,7 @@ interface ValidationResult {
 
 const schema = z.object({
   signer: z.string().regex(ACCOUNT_ADDRESS_REGEX),
+  networkId: z.number().min(1),
   token: z.string().regex(ACCOUNT_ADDRESS_REGEX),
   value: z.number().min(0),
   deadline: z.number().min(MIN_DEADLINE),
