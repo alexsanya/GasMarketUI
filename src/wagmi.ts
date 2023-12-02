@@ -5,7 +5,7 @@ import { configureChains, createConfig } from 'wagmi'
 import { polygon } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
-import { defineChain, createPublicClient, http, keccak256 } from 'viem'
+import { defineChain, createPublicClient, http } from 'viem'
 
 const walletConnectProjectId = 'b0f095af13dfdd0d24b7106ac0a821d7'
 

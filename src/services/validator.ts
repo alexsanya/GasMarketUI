@@ -21,8 +21,8 @@ const schema = z.object({
   value: z.number().min(0),
   deadline: z.number().min(MIN_DEADLINE),
   reward: z.number().min(0),
-  permitSignature: z.string(SIGNATURE_REGEX),
-  rewardSignature: z.string(SIGNATURE_REGEX)
+  permitSignature: z.string().regex(SIGNATURE_REGEX),
+  rewardSignature: z.string().regex(SIGNATURE_REGEX)
 })
 
 export function splitSignature(signatureHex: string) {
