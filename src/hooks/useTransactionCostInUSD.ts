@@ -10,10 +10,10 @@ function useTransactionCostInUSD() {
   const [transactionCostInEth, setTransactionCostInEth] = useState(null)
   const [transactionCostInUSD, setTransactionCostInUSD] = useState(null)
   const maticPrice = useMaticPrice()
-  const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
+  const { data: feeData, isError, isLoading } = useFeeData()
 
   useEffect(() => {
-    setTransactionCostInEth(feeData?.gasPrice * BigInt(SWAP_GAS_REQUIRED))
+    !isLoading && !isError && feeData && setTransactionCostInEth(feeData?.gasPrice * BigInt(SWAP_GAS_REQUIRED))
   },[feeData])
 
 

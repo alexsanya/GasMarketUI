@@ -5,7 +5,7 @@ export const CHAINLINK_ETH_USD_FEED="0xAB594600376Ec9fD91F8e885dADF0CE036862dE0"
 export const MIN_COMISSION_USDC=500000 // 50 cent
 export const DEFAULT_ORDER_TTL_SEC=300
 export const SWAP_GAS_REQUIRED=231814
-export const EXPLORER_URL="https://polygonscan.com/address/"
+export const EXPLORER_URL="https://polygonscan.com/"
 export const ORDER_MAX_TTL_SEC = 600
 export const DB_FILE = './database_test.sqlite'
 

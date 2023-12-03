@@ -65,7 +65,7 @@ export function OrderCard({order}) {
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           <span>
             {order.token}
-            <a href={EXPLORER_URL + order.token} target="_blank" rel="noreferrer">
+            <a href={EXPLORER_URL + `address/${order.token}`} target="_blank" rel="noreferrer">
               <LinkIcon style={{"cursor": "pointer"}} />
             </a>
           </span>

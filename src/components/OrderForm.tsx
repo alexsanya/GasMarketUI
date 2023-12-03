@@ -9,17 +9,20 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useFeeData, useNetwork } from 'wagmi'
+import { watchContractEvent } from '@wagmi/core'
+import { keccak256 } from 'viem'
 import formatETH from '../utils/formatETH'
 
 import useMaticPrice from "../hooks/useMaticPrice"
 import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
+import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
-import { USDC_ADDRESS, DEFAULT_ORDER_TTL_SEC, MIN_COMISSION_USDC } from '../config';
+import { USDC_ADDRESS, GAS_BROKER_ADDRESS, DEFAULT_ORDER_TTL_SEC, MIN_COMISSION_USDC, EXPLORER_URL } from '../config';
 
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
-
 
 export function OrderForm() {
 
@@ -31,6 +34,8 @@ export function OrderForm() {
   const [suggestedReward, setSuggestedReward] = useState(MIN_COMISSION_USDC)
   const maticPrice = useMaticPrice()
   const transactionCostInUSD = useTransactionCostInUSD()
+  const [state, setState] = useState('initial')
+  const [transactionHash, setTransactionHash] = useState(null)
 
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const { chain } = useNetwork()
@@ -43,6 +48,24 @@ export function OrderForm() {
   }, [transactionCostInUSD])
 
 
+  useEffect(() => {
+    watchContractEvent(
+      {
+        address: GAS_BROKER_ADDRESS,
+        abi: gasBrokerAbi,
+        eventName: 'Swap',
+      },
+      (events) => {
+        const permitHash = keccak256(permitSignature);
+        console.log({permitSignature, permitHash});
+        const swapEvent = events.find(event => event.args.permitHash === permitHash)
+        if (swapEvent) {
+          setTransactionHash(swapEvent.transactionHash);
+          setState('completed');
+        }
+      }
+    )
+  }, [permitSignature])
 
 
   const handleSubmit = event => {
@@ -76,6 +99,7 @@ export function OrderForm() {
       rewardSignature
     }
 
+    setState('pending')
     const response = await fetch('/api/order', {
         method: 'POST',
         headers: {
@@ -92,6 +116,7 @@ export function OrderForm() {
     } else {
       setOrderData(null)
       setErrorTabOpened(true)
+      setState('error')
     }
   }
   
@@ -178,14 +203,32 @@ export function OrderForm() {
             defaultValue={DEFAULT_ORDER_TTL_SEC}
             autoFocus
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign and publish
-          </Button>
+          {state === 'initial' &&
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign and publish
+            </Button>
+          }
+          {state === 'pending' &&
+            <Button fullWidth>
+              Pending <CircularProgress disableShrink />
+            </Button>
+          }
+          {state === 'completed' && 
+            <span>
+              Transaction hash:<br/>
+              <a href={EXPLORER_URL + `tx/${transactionHash}`} target="_blank" rel="noreferrer">
+                {transactionHash}
+              </a>
+            </span>
+          }
+          {state === 'error' &&
+            <span>Error</span>
+          }
         </Box>
       </Box>
       <Snackbar 
