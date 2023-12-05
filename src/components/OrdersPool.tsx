@@ -41,8 +41,7 @@ export function OrdersPool() {
   }, [])
 
   useEffect(() => {
-    console.log(feeData)
-    setTransactionCostInEth(feeData?.gasPrice * BigInt(SWAP_GAS_REQUIRED))
+    feeData && setTransactionCostInEth(feeData?.gasPrice * BigInt(SWAP_GAS_REQUIRED))
   },[feeData])
 
 

@@ -1,94 +1,46 @@
-import { Account } from '../components/Account'
-import { Balance } from '../components/Balance'
-import { BlockNumber } from '../components/BlockNumber'
-import { ConnectButton } from '../components/ConnectButton'
-import { Connected } from '../components/Connected'
-import { NetworkSwitcher } from '../components/NetworkSwitcher'
-import { ReadContract } from '../components/ReadContract'
-import { ReadContracts } from '../components/ReadContracts'
-import { ReadContractsInfinite } from '../components/ReadContractsInfinite'
-import { SendTransaction } from '../components/SendTransaction'
-import { SendTransactionPrepared } from '../components/SendTransactionPrepared'
-import { SignMessage } from '../components/SignMessage'
-import { SignTypedData } from '../components/SignTypedData'
-import { Token } from '../components/Token'
-import { WatchContractEvents } from '../components/WatchContractEvents'
-import { WatchPendingTransactions } from '../components/WatchPendingTransactions'
-import { WriteContract } from '../components/WriteContract'
-import { WriteContractPrepared } from '../components/WriteContractPrepared'
+import Link from 'next/link';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import Container from '@mui/material/Container';
 
 export default function Page() {
   return (
-    <>
-      <h1>wagmi + RainbowKit + Next.js</h1>
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Link href="/order" className="container flex flex-col items-center m-10 p-4 max-w-fit">
+          <p className="text-lg text-gray-700 p-3">
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Make order
+            </Button>
+          </p>
+        </Link>
 
-      <ConnectButton />
+        <Link href="/pool" className="container flex flex-col items-center m-10 p-4 max-w-fit">
+          <p className="text-lg text-gray-700 p-3">
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Explore orders
+            </Button>
+          </p>
+        </Link>
+      </Box>
+    </Container>
 
-      <Connected>
-        <hr />
-        <h2>Network</h2>
-        <NetworkSwitcher />
-        <br />
-        <hr />
-        <h2>Account</h2>
-        <Account />
-        <br />
-        <hr />
-        <h2>Balance</h2>
-        <Balance />
-        <br />
-        <hr />
-        <h2>Block Number</h2>
-        <BlockNumber />
-        <br />
-        <hr />
-        <h2>Read Contract</h2>
-        <ReadContract />
-        <br />
-        <hr />
-        <h2>Read Contracts</h2>
-        <ReadContracts />
-        <br />
-        <hr />
-        <h2>Read Contracts Infinite</h2>
-        <ReadContractsInfinite />
-        <br />
-        <hr />
-        <h2>Send Transaction</h2>
-        <SendTransaction />
-        <br />
-        <hr />
-        <h2>Send Transaction (Prepared)</h2>
-        <SendTransactionPrepared />
-        <br />
-        <hr />
-        <h2>Sign Message</h2>
-        <SignMessage />
-        <br />
-        <hr />
-        <h2>Sign Typed Data</h2>
-        <SignTypedData />
-        <br />
-        <hr />
-        <h2>Token</h2>
-        <Token />
-        <br />
-        <hr />
-        <h2>Watch Contract Events</h2>
-        <WatchContractEvents />
-        <br />
-        <hr />
-        <h2>Watch Pending Transactions</h2>
-        <WatchPendingTransactions />
-        <br />
-        <hr />
-        <h2>Write Contract</h2>
-        <WriteContract />
-        <br />
-        <hr />
-        <h2>Write Contract (Prepared)</h2>
-        <WriteContractPrepared />
-      </Connected>
-    </>
   )
 }

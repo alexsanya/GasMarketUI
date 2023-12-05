@@ -50,7 +50,7 @@ class Validator {
     const [rewardV, rewardR, rewardS] = splitSignature(rewardSignature)
 
     try {
-      await viemClient.simulateContract({
+      const { result, request } = await viemClient.simulateContract({
         address: GAS_BROKER_ADDRESS,
         abi: gasBrokerABI,
         functionName: 'swap', 
