@@ -4,7 +4,7 @@ import pg from 'pg';
 import { Sequelize, DataTypes, Op } from 'sequelize'
 import { Storage, Status, Order as OrderType, Filter, Page, Pagination, Result } from './storage'
 import { keccak256 } from 'viem'
-import { ORDER_MAX_TTL_SEC, DB_FILE } from '../config'
+import { getConfig } from '../config'
 
 const sequelize = new Sequelize({
   username: process.env.DB_USER,
@@ -115,6 +115,7 @@ class PostgresStorage extends Storage {
   }
 
   async cleanUp(timestamp: BigInt, closedOrders: string[], networkId: number) {
+    const { ORDER_MAX_TTL_SEC } = getConfig(networkId)
     await this.sync()
     await Order.update({ active: false }, {
       where: {

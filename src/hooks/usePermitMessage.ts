@@ -3,12 +3,13 @@
 import { useContractRead } from 'wagmi'
 import { useState, useEffect } from 'react'
 import useBlock from './useBlock'
-import { GAS_BROKER_ADDRESS } from '../config'
+import useConfig from '../hooks/useConfig'
 
 import noncesABI from '../resources/noncesABI.json' assert { type: 'json' }
 
 function usePermitMessage(address, token, value, lifetime) {
   const block = useBlock()
+  const { GAS_BROKER_ADDRESS } = useConfig()
   const { data: nonce } = useContractRead({
     address: token,
     abi: noncesABI,

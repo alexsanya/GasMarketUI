@@ -3,24 +3,12 @@
 import { useEffect } from "react"
 import { keccak256 } from 'viem'
 import { useAccount, useSignTypedData } from 'wagmi'
-import { GAS_BROKER_ADDRESS } from '../config'
+import useConfig from '../hooks/useConfig'
 import useDomain from '../hooks/useDomain'
 import rewardTypes from '../resources/rewardTypes.json' assert { type: 'json' }
 
-const RewardMessageSignerWithAddress = ({permitSignature, value, onSuccess}) => {
-  const { address, isConnected } = useAccount()
-  return (
-    address &&
-    <RewardMessageSigner
-      address={address}
-      permitSignature={permitSignature}
-      value={value}
-      onSuccess={onSuccess}
-    />
-  )
-}
-
-const RewardMessageSigner = ({address, permitSignature, value, onSuccess}) => {
+const RewardMessageSigner = ({permitSignature, value, onSuccess}) => {
+  const { GAS_BROKER_ADDRESS } = useConfig()
   const domain = useDomain(GAS_BROKER_ADDRESS)
 
   const message = {
@@ -44,6 +32,7 @@ const RewardMessageSigner = ({address, permitSignature, value, onSuccess}) => {
 
 
   useEffect(() => {
+    console.log('[RewardMessageSigner] ', permitSignature)
     if (domain && permitSignature && value && !isLoading) {
       console.log({domain, message})
       signTypedData()
@@ -53,4 +42,4 @@ const RewardMessageSigner = ({address, permitSignature, value, onSuccess}) => {
   return null
 }
 
-export default RewardMessageSignerWithAddress
+export default RewardMessageSigner

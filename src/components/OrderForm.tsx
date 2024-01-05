@@ -10,36 +10,36 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useFeeData, useNetwork, useChainId } from 'wagmi'
+import { useFeeData, useNetwork } from 'wagmi'
 import { watchContractEvent } from '@wagmi/core'
 import { keccak256 } from 'viem'
 import formatETH from '../utils/formatETH'
+import useConfig from '../hooks/useConfig'
 
 import useMaticPrice from "../hooks/useMaticPrice"
 import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
-import gasBrokerAbi from "../resources/gasBrokerABI.json" assert { type: 'json' }
-import { getConfig } from "../config"
+import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
 
 export function OrderForm() {
-  const chainId = useChainId()
-
-  const [usdcAddress, setUsdcAddress] = useState()
-  const [gasBrokerAddress, setGasBrokerAddress] = useState()
-  const [defaultOrderTtlSec, setDefaultOrderTtlSec] = useState()
-  const [minComissionUSDC, setMinComissionUSDC] = useState(500000)
-  const [explorerUrl, setExplorerUrl] = useState()
-
+  const {
+    USDC_ADDRESS,
+    GAS_BROKER_ADDRESS,
+    DEFAULT_ORDER_TTL_SEC,
+    MIN_COMISSION_USDC,
+    EXPLORER_URL
+  } = useConfig()
 
   const [orderData, setOrderData] = useState(null)
   const [permitSignature, setPermitSignature] = useState('')
   const [permitMessage, setPermitMessage] = useState(null)
   const [successTabOpened, setSuccessTabOpened] = useState(false)
   const [errorTabOpened, setErrorTabOpened] = useState(false)
-  const [suggestedReward, setSuggestedReward] = useState(minComissionUSDC)
+  const [suggestedReward, setSuggestedReward] = useState(MIN_COMISSION_USDC)
+
   const maticPrice = useMaticPrice()
   const transactionCostInUSD = useTransactionCostInUSD()
   const [state, setState] = useState('initial')
@@ -51,28 +51,18 @@ export function OrderForm() {
   const orderForm = useRef();
 
   useEffect(() => {
-    setSuggestedReward(Math.max(transactionCostInUSD! * 3, minComissionUSDC) / 10**6)
+    setSuggestedReward(Math.max(transactionCostInUSD! * 3, MIN_COMISSION_USDC) / 10**6)
+    orderForm.current.elements["token"].value = USDC_ADDRESS
     orderForm.current.elements["reward"].value = suggestedReward
-  }, [transactionCostInUSD, minComissionUSDC])
-
-  useEffect(() => {
-    console.log('[OrderForm] ChainId is: ', chainId)
-    if (chainId) {
-      const { USDC_ADDRESS, GAS_BROKER_ADDRESS, DEFAULT_ORDER_TTL_SEC, MIN_COMISSION_USDC, EXPLORER_URL } = getConfig(chainId)
-      setUsdcAddress(USDC_ADDRESS)
-      setGasBrokerAddress(GAS_BROKER_ADDRESS)
-      setDefaultOrderTtlSec(DEFAULT_ORDER_TTL_SEC)
-      setMinComissionUSDC(MIN_COMISSION_USDC)
-      setExplorerUrl(EXPLORER_URL)
-    }
-
-  }, [chainId])
+    orderForm.current.elements["lifetime"].value = DEFAULT_ORDER_TTL_SEC
+  }, [transactionCostInUSD, USDC_ADDRESS, DEFAULT_ORDER_TTL_SEC])
 
 
   useEffect(() => {
+    console.log('Watiching events ', permitSignature)
     watchContractEvent(
       {
-        address: gasBrokerAddress,
+        address: GAS_BROKER_ADDRESS,
         abi: gasBrokerAbi,
         eventName: 'Swap',
       },
@@ -103,6 +93,7 @@ export function OrderForm() {
   };
 
   const onPermitSigned = (message, signature) => {
+    console.log('Permit message signed')
     setPermitMessage(message)
     setPermitSignature(signature)
   }
@@ -189,7 +180,6 @@ export function OrderForm() {
             id="token"
             label="Token address"
             name="token"
-            defaultValue={usdcAddress}
             autoComplete="token"
             autoFocus
           />
@@ -197,7 +187,7 @@ export function OrderForm() {
             margin="normal"
             required
             fullWidth
-            id="token"
+            id="value"
             label="Value"
             name="value"
             autoComplete="value"
@@ -221,7 +211,7 @@ export function OrderForm() {
             label="Lifetime"
             name="lifetime"
             autoComplete="value"
-            defaultValue={defaultOrderTtlSec}
+            defaultValue={DEFAULT_ORDER_TTL_SEC}
             autoFocus
           />
           {state === 'initial' &&
@@ -242,7 +232,7 @@ export function OrderForm() {
           {state === 'completed' && 
             <span>
               Transaction hash:<br/>
-              <a href={explorerUrl + `tx/${transactionHash}`} target="_blank" rel="noreferrer">
+              <a href={EXPLORER_URL + `tx/${transactionHash}`} target="_blank" rel="noreferrer">
                 {transactionHash}
               </a>
             </span>

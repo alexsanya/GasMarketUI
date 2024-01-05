@@ -1,14 +1,16 @@
 // @ts-nocheck
 
 import { useState, useEffect } from 'react';
-import { useContractReads } from 'wagmi'
+import { useContractReads, useChainId } from 'wagmi'
 import { polygon } from 'wagmi/chains'
 
 import domainABI from '../resources/domainABI.json' assert { type: 'json' }
 
-function useDomain(chainId, address) {
+function useDomain(address) {
 
+  const chainId = useChainId()
   const [domain, setDomain] = useState(null)
+
 
   const { data, error, isError, isLoading } = useContractReads({
     contracts: [
@@ -37,7 +39,7 @@ function useDomain(chainId, address) {
     })
 
 
-  }, [data, error])
+  }, [data, error, chainId])
 
 
   return domain

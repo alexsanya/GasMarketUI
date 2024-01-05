@@ -44,12 +44,12 @@ class Validator {
         errors: response.error.errors
       }
     }
-    const { signer, token, value, deadline, chainId, reward, permitSignature, rewardSignature } = response.data
+    const { signer, token, value, deadline, networkId, reward, permitSignature, rewardSignature } = response.data
     const [permitV, permitR, permitS] = splitSignature(permitSignature)
     const [rewardV, rewardR, rewardS] = splitSignature(rewardSignature)
 
-    const { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } = getConfig(chainid)
-    const viemClient = getViemClient(chainId)
+    const { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } = getConfig(networkId)
+    const viemClient = getViemClient(networkId)
 
     try {
       const { result, request } = await viemClient.simulateContract({
