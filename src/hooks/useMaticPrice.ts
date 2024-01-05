@@ -1,20 +1,32 @@
 // @ts-nocheck
 
 import { useState, useEffect } from 'react'
-import { useContractRead } from 'wagmi'
-import { CHAINLINK_ETH_USD_FEED } from '../config'
+import { getConfig } from '../config'
+import { useContractRead, useChainId } from 'wagmi'
 
 import aggregatorV3InterfaceAbi from '../resources/aggregatorV3InterfaceABI.json' assert { type: 'json' }
 
 function useMaticPrice() {
 
+  const chainId = useChainId()
+
   const [price, setPrice] = useState(null)
+  const [chainlinkEthUSDFeed, setChainlinkEthUSDFeed] = useState()
 
   const { data, error, isError, isLoading } = useContractRead({
-    address: CHAINLINK_ETH_USD_FEED,
+    address: chainlinkEthUSDFeed,
     abi: aggregatorV3InterfaceAbi,
     functionName: 'latestRoundData'
   })
+
+
+  useEffect(() => {
+    if (chainId) {
+      const { CHAINLINK_ETH_USD_FEED } = getConfig(chainId)
+      console.log({ CHAINLINK_ETH_USD_FEED })
+      setChainlinkEthUSDFeed(CHAINLINK_ETH_USD_FEED)
+    }
+  }, [chainId])
 
   useEffect(() => {
     if (!data) return;

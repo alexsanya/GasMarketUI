@@ -10,28 +10,36 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useFeeData, useNetwork } from 'wagmi'
+import { useFeeData, useNetwork, useChainId } from 'wagmi'
 import { watchContractEvent } from '@wagmi/core'
 import { keccak256 } from 'viem'
 import formatETH from '../utils/formatETH'
 
 import useMaticPrice from "../hooks/useMaticPrice"
 import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
-import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' }
+import gasBrokerAbi from "../resources/gasBrokerABI.json" assert { type: 'json' }
+import { getConfig } from "../config"
 
-import { USDC_ADDRESS, GAS_BROKER_ADDRESS, DEFAULT_ORDER_TTL_SEC, MIN_COMISSION_USDC, EXPLORER_URL } from '../config';
 
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
 
 export function OrderForm() {
+  const chainId = useChainId()
+
+  const [usdcAddress, setUsdcAddress] = useState()
+  const [gasBrokerAddress, setGasBrokerAddress] = useState()
+  const [defaultOrderTtlSec, setDefaultOrderTtlSec] = useState()
+  const [minComissionUSDC, setMinComissionUSDC] = useState(500000)
+  const [explorerUrl, setExplorerUrl] = useState()
+
 
   const [orderData, setOrderData] = useState(null)
   const [permitSignature, setPermitSignature] = useState('')
   const [permitMessage, setPermitMessage] = useState(null)
   const [successTabOpened, setSuccessTabOpened] = useState(false)
   const [errorTabOpened, setErrorTabOpened] = useState(false)
-  const [suggestedReward, setSuggestedReward] = useState(MIN_COMISSION_USDC)
+  const [suggestedReward, setSuggestedReward] = useState(minComissionUSDC)
   const maticPrice = useMaticPrice()
   const transactionCostInUSD = useTransactionCostInUSD()
   const [state, setState] = useState('initial')
@@ -43,15 +51,28 @@ export function OrderForm() {
   const orderForm = useRef();
 
   useEffect(() => {
-    setSuggestedReward(Math.max(transactionCostInUSD! * 3, MIN_COMISSION_USDC) / 10**6)
+    setSuggestedReward(Math.max(transactionCostInUSD! * 3, minComissionUSDC) / 10**6)
     orderForm.current.elements["reward"].value = suggestedReward
-  }, [transactionCostInUSD])
+  }, [transactionCostInUSD, minComissionUSDC])
+
+  useEffect(() => {
+    console.log('[OrderForm] ChainId is: ', chainId)
+    if (chainId) {
+      const { USDC_ADDRESS, GAS_BROKER_ADDRESS, DEFAULT_ORDER_TTL_SEC, MIN_COMISSION_USDC, EXPLORER_URL } = getConfig(chainId)
+      setUsdcAddress(USDC_ADDRESS)
+      setGasBrokerAddress(GAS_BROKER_ADDRESS)
+      setDefaultOrderTtlSec(DEFAULT_ORDER_TTL_SEC)
+      setMinComissionUSDC(MIN_COMISSION_USDC)
+      setExplorerUrl(EXPLORER_URL)
+    }
+
+  }, [chainId])
 
 
   useEffect(() => {
     watchContractEvent(
       {
-        address: GAS_BROKER_ADDRESS,
+        address: gasBrokerAddress,
         abi: gasBrokerAbi,
         eventName: 'Swap',
       },
@@ -168,7 +189,7 @@ export function OrderForm() {
             id="token"
             label="Token address"
             name="token"
-            defaultValue={USDC_ADDRESS}
+            defaultValue={usdcAddress}
             autoComplete="token"
             autoFocus
           />
@@ -200,7 +221,7 @@ export function OrderForm() {
             label="Lifetime"
             name="lifetime"
             autoComplete="value"
-            defaultValue={DEFAULT_ORDER_TTL_SEC}
+            defaultValue={defaultOrderTtlSec}
             autoFocus
           />
           {state === 'initial' &&
@@ -221,7 +242,7 @@ export function OrderForm() {
           {state === 'completed' && 
             <span>
               Transaction hash:<br/>
-              <a href={EXPLORER_URL + `tx/${transactionHash}`} target="_blank" rel="noreferrer">
+              <a href={explorerUrl + `tx/${transactionHash}`} target="_blank" rel="noreferrer">
                 {transactionHash}
               </a>
             </span>

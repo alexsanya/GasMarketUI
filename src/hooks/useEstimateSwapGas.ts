@@ -1,13 +1,16 @@
 // @ts-nocheck
 
-import { usePublicClient } from 'wagmi'
+import { usePublicClient, useChainId } from 'wagmi'
 import { useEffect, useState } from 'react'
-import { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } from '../config'
+import { getConfig } from '../config'
 import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 function useEstimateSwapGas(args, value) {
   const client = usePublicClient()
+  const chainId = useChainId()
   const [gas, setGas] = useState(null)
+  const { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } = getConfig(chainId)
+
 
   useEffect(() => {
     async function estimateGas() {

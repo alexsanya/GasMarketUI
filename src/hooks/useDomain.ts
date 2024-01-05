@@ -6,7 +6,7 @@ import { polygon } from 'wagmi/chains'
 
 import domainABI from '../resources/domainABI.json' assert { type: 'json' }
 
-function useDomain(address) {
+function useDomain(chainId, address) {
 
   const [domain, setDomain] = useState(null)
 
@@ -31,8 +31,8 @@ function useDomain(address) {
     const [name, version] = data.map(response => response.result)
     setDomain({
       name,
-      version,
-      chainId: polygon.id,
+      version: version || "1",
+      chainId,
       verifyingContract: address
     })
 

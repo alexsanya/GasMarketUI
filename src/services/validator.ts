@@ -2,10 +2,9 @@
 
 import { z } from 'zod'
 import { Order } from './storage'
-import { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } from '../config'
 import { MIN_DEADLINE, ACCOUNT_ADDRESS_REGEX, SIGNATURE_REGEX } from '../constants'
-
-import { viemClient } from '../wagmi'
+import { getConfig } from '../config'
+import { getViemClient } from '../wagmi'
 import gasBrokerABI from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 interface ValidationResult {
@@ -45,9 +44,12 @@ class Validator {
         errors: response.error.errors
       }
     }
-    const { signer, token, value, deadline, reward, permitSignature, rewardSignature } = response.data
+    const { signer, token, value, deadline, chainId, reward, permitSignature, rewardSignature } = response.data
     const [permitV, permitR, permitS] = splitSignature(permitSignature)
     const [rewardV, rewardR, rewardS] = splitSignature(rewardSignature)
+
+    const { GAS_BROKER_ADDRESS, GAS_PROVIDER_ADDRESS } = getConfig(chainid)
+    const viemClient = getViemClient(chainId)
 
     try {
       const { result, request } = await viemClient.simulateContract({

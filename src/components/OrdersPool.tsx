@@ -1,11 +1,11 @@
 // @ts-nocheck
 
 import { useState, useEffect } from "react"
-import { useFeeData, useNetwork } from 'wagmi'
+import { getConfig } from "../config"
+import { useFeeData, useNetwork, useChainId } from 'wagmi'
 import Box from '@mui/material/Box'
 import { OrdersList } from "../components/OrdersList"
 import Typography from '@mui/material/Typography'
-import { SWAP_GAS_REQUIRED } from '../config'
 import formatETH from '../utils/formatETH'
 import useMaticPrice from '../hooks/useMaticPrice'
 
@@ -13,9 +13,17 @@ export function OrdersPool() {
   const [orders, setOrders] = useState([])
   const [transactionCostInEth, setTransactionCostInEth] = useState(null)
   const [transactionCostInUSD, setTransactionCostInUSD] = useState(null)
+  const [swapGasRequired, setSwapGasRequired] = useState()
   const maticPrice = useMaticPrice()
-  const { chain } = useNetwork()
+  const chainId = useChainId()
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
+
+  useEffect(() => {
+    if (chainId) {
+      const { SWAP_GAS_REQUIRED } = getConfig(chainId)
+      setSwapGasRequired(SWAP_GAS_REQUIRED)
+    }
+  }, [chainId])
 
   useEffect((): any => {
     (async () => {
@@ -24,7 +32,7 @@ export function OrdersPool() {
           limit: 10
         },
         filter: {
-          networkIds: [chain.id]
+          networkIds: [chainId]
         }
       }
       const response = await fetch('/api/list', {
@@ -41,8 +49,8 @@ export function OrdersPool() {
   }, [])
 
   useEffect(() => {
-    feeData && setTransactionCostInEth(feeData?.gasPrice * BigInt(SWAP_GAS_REQUIRED))
-  },[feeData])
+    feeData &&  swapGasRequired && setTransactionCostInEth(feeData?.gasPrice * BigInt(swapGasRequired))
+  },[feeData, swapGasRequired])
 
 
   useEffect(() => {

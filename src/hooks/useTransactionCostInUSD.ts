@@ -1,25 +1,38 @@
 // @ts-nocheck
 
-import { useFeeData } from "wagmi"
+import { useFeeData, useChainId } from "wagmi"
 import { useState, useEffect } from 'react'
-import { SWAP_GAS_REQUIRED } from '../config'
+import { getConfig } from "../config"
 import useMaticPrice from '../hooks/useMaticPrice'
 
 function useTransactionCostInUSD() {
 
   const [transactionCostInEth, setTransactionCostInEth] = useState(null)
   const [transactionCostInUSD, setTransactionCostInUSD] = useState(null)
+  const [swapGasRequired, setSwapGasRequired] = useState()
+  const chainId = useChainId()
+
+
   const maticPrice = useMaticPrice()
   const { data: feeData, isError, isLoading } = useFeeData()
 
   useEffect(() => {
-    !isLoading && !isError && feeData && setTransactionCostInEth(feeData?.gasPrice * BigInt(SWAP_GAS_REQUIRED))
-  },[feeData])
+    !isLoading && !isError && feeData && swapGasRequired && setTransactionCostInEth(feeData?.gasPrice * BigInt(swapGasRequired))
+  },[feeData, swapGasRequired])
+
+  useEffect(() => {
+    if (chainId) {
+      const { SWAP_GAS_REQUIRED } = getConfig(chainId)
+      setSwapGasRequired(SWAP_GAS_REQUIRED)
+    }
+  }, [chainId])
+
 
 
   useEffect(() => {
     if (!transactionCostInEth || !maticPrice) return;
-    setTransactionCostInUSD(Number(transactionCostInEth / 10n**14n) * maticPrice / 10**4)
+    console.log({ transactionCostInEth, maticPrice })
+    setTransactionCostInUSD(Number(transactionCostInEth / 10n**10n) * maticPrice / 10**8)
   }, [transactionCostInEth, maticPrice])
 
 
