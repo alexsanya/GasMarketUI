@@ -2,20 +2,21 @@
 
 import { useContractRead } from 'wagmi'
 import { useState, useEffect } from 'react'
-import { GAS_BROKER_ADDRESS } from '../config'
+import useMaticPrice from '../hooks/useMaticPrice'
 
 import gasBrokerABI from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 function useEstimateEth(token, value) {
 
-  const [ amount, setAmount ] = useState(BigInt(1e16))
-
+  const [ amount, setAmount ] = useState()
+  const ethPrice = useMaticPrice()
 
   useEffect(() => {
-    setAmount(BigInt(1e16))
+    if (ethPrice) {
+      setAmount(BigInt(Math.round(value * 10**12 / ethPrice)))
+    }
   },
-  [])
-
+  [ethPrice])
 
   return amount
 }
