@@ -10,7 +10,7 @@ import LinkIcon from '@mui/icons-material/Link'
 import Typography from '@mui/material/Typography'
 import { usePrepareContractWrite, useContractWrite, useFeeData } from 'wagmi'
 
-import { GAS_BROKER_ADDRESS, EXPLORER_URL } from '../config'
+import useConfig from '../hooks/useConfig'
 import useDomain from '../hooks/useDomain'
 import useDecimals from '../hooks/useDecimals'
 import { splitSignature } from '../services/validator'
@@ -19,6 +19,7 @@ import formatETH from '../utils/formatETH'
 import gasBrokerABI from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 export function OrderCard({order}) {
+  const { GAS_BROKER_ADDRESS, EXPLORER_URL } = useConfig()
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const domain: any = useDomain(order.token)
   const decimals = useDecimals(order.token)

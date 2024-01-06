@@ -8,11 +8,12 @@ import Typography from '@mui/material/Typography'
 import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
 import useMaticPrice from '../hooks/useMaticPrice'
+import useTransactionCosInUSD from '../hooks/useTransactionCostInUSD'
 
 export function OrdersPool() {
   const [orders, setOrders] = useState([])
   const [transactionCostInEth, setTransactionCostInEth] = useState(null)
-  const [transactionCostInUSD, setTransactionCostInUSD] = useState(null)
+  const transactionCostInUSD = useTransactionCosInUSD();
   const maticPrice = useMaticPrice()
   const { chain } = useNetwork()
   const { SWAP_GAS_REQUIRED } = useConfig()
@@ -44,13 +45,6 @@ export function OrdersPool() {
   useEffect(() => {
     feeData && SWAP_GAS_REQUIRED && setTransactionCostInEth(feeData?.gasPrice * BigInt(SWAP_GAS_REQUIRED))
   },[feeData, SWAP_GAS_REQUIRED])
-
-
-  useEffect(() => {
-    if (!transactionCostInEth || !maticPrice) return;
-    setTransactionCostInUSD(Number(transactionCostInEth / 10n**14n) * maticPrice / 10**4)
-  }, [transactionCostInEth, maticPrice])
-
 
   return (<>
     <Box
