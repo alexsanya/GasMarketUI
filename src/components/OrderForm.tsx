@@ -30,7 +30,8 @@ export function OrderForm() {
     GAS_BROKER_ADDRESS,
     DEFAULT_ORDER_TTL_SEC,
     MIN_COMISSION_USDC,
-    EXPLORER_URL
+    EXPLORER_URL,
+    GAS_UNIT_NAME
   } = useConfig()
 
   const [orderData, setOrderData] = useState(null)
@@ -163,7 +164,7 @@ export function OrderForm() {
           Gas price: {feeData && formatETH(feeData?.gasPrice)}
         </Typography>
         <Typography variant="body2">
-          MATIC price: {maticPrice} USD
+          {GAS_UNIT_NAME} price: {maticPrice} USD
         </Typography>
         <Typography variant="body2">
           Transaction cost: {transactionCostInUSD} USD

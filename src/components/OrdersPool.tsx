@@ -16,7 +16,7 @@ export function OrdersPool() {
   const transactionCostInUSD = useTransactionCosInUSD();
   const maticPrice = useMaticPrice()
   const { chain } = useNetwork()
-  const { SWAP_GAS_REQUIRED } = useConfig()
+  const { SWAP_GAS_REQUIRED, GAS_UNIT_NAME } = useConfig()
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
 
   useEffect((): any => {
@@ -60,7 +60,7 @@ export function OrdersPool() {
         Pending orders
       </Typography>
       <Typography variant="body2">
-        Matic price: {maticPrice} USD
+        {GAS_UNIT_NAME} price: {maticPrice} USD
       </Typography>
       <Typography variant="body2">
         Gas price: {feeData && formatETH(feeData?.gasPrice)}

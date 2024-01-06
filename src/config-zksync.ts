@@ -5,7 +5,8 @@ export const CHAINLINK_ETH_USD_FEED="0x6D41d1dc818112880b40e26BD6FD347E41008eDA"
 export const MIN_COMISSION_USDC=500000 // 50 cent
 export const DEFAULT_ORDER_TTL_SEC=300
 export const SWAP_GAS_REQUIRED=231814
-export const EXPLORER_URL="https://polygonscan.com/"
+export const EXPLORER_URL="https://explorer.zksync.io/"
+export const GAS_UNIT_NAME = "ETH"
 export const ORDER_MAX_TTL_SEC = 600
 export const DEFAULT_BLOCK = 23388492
 

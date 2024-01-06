@@ -6,5 +6,6 @@ export const MIN_COMISSION_USDC=500000 // 50 cent
 export const DEFAULT_ORDER_TTL_SEC=300
 export const SWAP_GAS_REQUIRED=231814
 export const EXPLORER_URL="https://polygonscan.com/"
+export const GAS_UNIT_NAME = "MATIC"
 export const ORDER_MAX_TTL_SEC = 600
 export const DEFAULT_BLOCK = 52017021
