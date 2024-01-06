@@ -33,6 +33,7 @@ const Order = sequelize.define('Order', {
 })
 
 const Block = sequelize.define('Block', {
+  networkId: DataTypes.INTEGER,
   timestamp: DataTypes.INTEGER
 })
 
@@ -109,9 +110,10 @@ class PostgresStorage extends Storage {
     }
   }
 
-  async getLatestBlock() {
+  async getLatestBlock(networkId) {
+    const { DEFAULT_BLOCK } = getConfig(networkId)
     await this.sync()
-    return (await Block.max('timestamp')) || 50029820
+    return (await Block.max('timestamp', { where: { networkId } })) || DEFAULT_BLOCK
   }
 
   async cleanUp(timestamp: BigInt, closedOrders: string[], networkId: number) {
@@ -131,7 +133,7 @@ class PostgresStorage extends Storage {
         }
       }
     })
-    await Block.create({timestamp})
+    await Block.create({networkId, timestamp})
   }
 }
 

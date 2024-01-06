@@ -7,5 +7,5 @@ export const DEFAULT_ORDER_TTL_SEC=300
 export const SWAP_GAS_REQUIRED=231814
 export const EXPLORER_URL="https://polygonscan.com/"
 export const ORDER_MAX_TTL_SEC = 600
-export const DB_FILE = './database_test.sqlite'
+export const DEFAULT_BLOCK = 23388492
 

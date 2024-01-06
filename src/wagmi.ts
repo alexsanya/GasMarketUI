@@ -7,7 +7,7 @@ import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { defineChain, createPublicClient, http } from 'viem'
 
-const CHAINS = [polygon, zkSync];
+export const CHAINS = [polygon, zkSync];
 
 const walletConnectProjectId = 'b0f095af13dfdd0d24b7106ac0a821d7'
 
