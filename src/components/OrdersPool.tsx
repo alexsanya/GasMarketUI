@@ -1,23 +1,15 @@
 // @ts-nocheck
 
 import { useState, useEffect } from "react"
-import { useFeeData, useNetwork } from 'wagmi'
+import { useNetwork } from 'wagmi'
 import Box from '@mui/material/Box'
 import { OrdersList } from "../components/OrdersList"
+import { PricesPanel } from "../components/PricesPanel"
 import Typography from '@mui/material/Typography'
-import formatETH from '../utils/formatETH'
-import useConfig from '../hooks/useConfig'
-import useMaticPrice from '../hooks/useMaticPrice'
-import useTransactionCosInUSD from '../hooks/useTransactionCostInUSD'
 
 export function OrdersPool() {
   const [orders, setOrders] = useState([])
-  const [transactionCostInEth, setTransactionCostInEth] = useState(null)
-  const transactionCostInUSD = useTransactionCosInUSD();
-  const maticPrice = useMaticPrice()
   const { chain } = useNetwork()
-  const { SWAP_GAS_REQUIRED, GAS_UNIT_NAME } = useConfig()
-  const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
 
   useEffect((): any => {
     (async () => {
@@ -42,9 +34,6 @@ export function OrdersPool() {
     })()
   }, [])
 
-  useEffect(() => {
-    feeData && SWAP_GAS_REQUIRED && setTransactionCostInEth(feeData?.gasPrice * BigInt(SWAP_GAS_REQUIRED))
-  },[feeData, SWAP_GAS_REQUIRED])
 
   return (<>
     <Box
@@ -59,19 +48,7 @@ export function OrdersPool() {
       <Typography component="h1" variant="h5">
         Pending orders
       </Typography>
-      <Typography variant="body2">
-        {GAS_UNIT_NAME} price: {maticPrice} USD
-      </Typography>
-      <Typography variant="body2">
-        Gas price: {feeData && formatETH(feeData?.gasPrice)}
-      </Typography>
-      <Typography variant="body2">
-        Transaction cost in ETH: {transactionCostInEth ? formatETH(transactionCostInEth) : 'estimating...'}
-      </Typography>
-      <Typography variant="body2">
-        Transaction cost in USD: {transactionCostInUSD}
-      </Typography>
-
+      <PricesPanel />
 
       <OrdersList orders={orders}/>
     </Box>

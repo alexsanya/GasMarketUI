@@ -15,6 +15,7 @@ import { watchContractEvent } from '@wagmi/core'
 import { keccak256 } from 'viem'
 import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
+import { PricesPanel } from '../components/PricesPanel'
 
 import useMaticPrice from "../hooks/useMaticPrice"
 import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
@@ -160,15 +161,7 @@ export function OrderForm() {
         <Typography component="h1" variant="h5">
           Make an order
         </Typography>
-        <Typography variant="body2">
-          Gas price: {feeData && formatETH(feeData?.gasPrice)}
-        </Typography>
-        <Typography variant="body2">
-          {GAS_UNIT_NAME} price: {maticPrice} USD
-        </Typography>
-        <Typography variant="body2">
-          Transaction cost: {transactionCostInUSD} USD
-        </Typography>
+        <PricesPanel />
         <Typography variant="body2">
           Suggested reward: {suggestedReward} USD
         </Typography>
