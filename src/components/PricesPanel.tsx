@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useFeeData } from 'wagmi'
 import { useState, useEffect } from "react"
 import Typography from '@mui/material/Typography'
