@@ -41,7 +41,7 @@ class Validator {
     if (!response.success) {
       return {
         isValid: false,
-        errors: response.error.errors
+        error: response.error.errors
       }
     }
     const { signer, token, value, deadline, networkId, reward, permitSignature, rewardSignature } = response.data
