@@ -1,0 +1,29 @@
+.connectButton {
+  cursor: pointer;
+  margin: auto;
+  width: 213px;
+  height: 48px;
+  padding: 0px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row-reverse;
+  gap: 9px;
+  border: 0;
+  box-sizing: border-box;
+  border-radius: 24px;
+  background-color: #ffffff;
+  color: #161616;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  outline: none;
+}
+
+.connectIcon {
+  font-size: 27px;
+  width: 27px;
+  height: 27px;
+  color: #161616;
+  fill: #161616;
+}

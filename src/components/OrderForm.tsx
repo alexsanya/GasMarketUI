@@ -16,6 +16,7 @@ import { keccak256 } from 'viem'
 import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
 import { PricesPanel } from '../components/PricesPanel'
+import { SwapButton } from '../components/SwapButton'
 
 import useMaticPrice from "../hooks/useMaticPrice"
 import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
@@ -209,14 +210,17 @@ export function OrderForm() {
             autoFocus
           />
           {state === 'initial' &&
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign and publish
-            </Button>
+            <>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign and publish
+              </Button>
+              <SwapButton />
+            </>
           }
           {state === 'pending' &&
             <Button fullWidth>

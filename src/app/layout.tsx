@@ -1,6 +1,5 @@
 import '@rainbow-me/rainbowkit/styles.css'
-import { Providers } from './providers'
-
+import './globals.css'
 
 export default function RootLayout({
   children,
@@ -10,7 +9,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <header>
+          <section>
+            <div className="grid h-screen grid-cols-2">
+              <div className="bg-white-500"></div>
+
+              <div className="bg-gray-800">
+                { children }
+              </div>
+            </div>
+          </section>
+        </header>
       </body>
     </html>
   )
