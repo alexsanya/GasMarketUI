@@ -49,23 +49,14 @@ const IconComponent = () => (
 
 export const SwapPreview = () => {
   return (
-
-
-    <div className="grid h-screen grid-rows-3">
-      <div></div>
-      <div className="row-span-2">
-        <div className="flex flex-row justify-between">
-          <div style={styles.amount}>
-            <div style={styles.container}>10 USDT</div>
-          </div>
-          <IconComponent />
-          <div style={styles.amount}>
-            <div style={styles.container}>0.00388 ETH</div>
-          </div>
-        </div>
+    <div className="flex flex-row justify-between" style={{width: "70%", margin: "auto"}}>
+      <div style={styles.amount}>
+        <div style={styles.container}>10 USDT</div>
+      </div>
+      <IconComponent />
+      <div style={styles.amount}>
+        <div style={styles.container}>0.00388 ETH</div>
       </div>
     </div>
-
-
   );
 }

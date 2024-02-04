@@ -9,7 +9,16 @@ import { ConnectButton } from '../../components/ConnectButton'
 import { Connected } from '../../components/Connected'
 import { Providers } from '../../app/providers'
 
-const defaultTheme = createTheme();
+const defaultTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#ffffff',
+    },
+    secondary: {
+      main: '#ffffff',
+    }
+  },
+});
 
 export default function Order() {
   return (

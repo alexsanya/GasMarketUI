@@ -1,10 +1,11 @@
 import React from 'react';
 import Slider from '@mui/material/Slider';
+import { createTheme } from '@mui/material/styles';
+import { purple } from '@mui/material/colors';
 
 const styles = {
   Container: {
     position: 'relative',
-    width: '551px',
     height: '63px',
     display: 'flex',
     justifyContent: 'center',
@@ -32,6 +33,17 @@ const styles = {
   },
 };
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#ffffff',
+    },
+    secondary: {
+      main: '#ffffff',
+    }
+  },
+});
+
 export const AmountSlider = () => {
   const [value, setValue] = React.useState(60);
 
@@ -41,7 +53,7 @@ export const AmountSlider = () => {
 
   return (
     <div style={styles.Container}>
-      <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" />
+      <Slider defaultValue={50} aria-label="Default" color="secondary" valueLabelDisplay="auto" />
     </div>
   );
 };

@@ -55,29 +55,30 @@ export function OrderForm() {
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const { chain } = useNetwork()
 
+
+
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+    <Container component="main" maxwidth="xs">
+      <cssbaseline />
 
-        <Box component="form" noValidate sx={{ mt: 1 }}>
-          <div className="flex flex-row justify-between">
-            <TokenWidget />
-            <AmountWidget />
+      <div className="grid h-screen grid-rows-3">
+        <div></div>
+        <div className="row-span-2">
+          <div className="grid grid-rows-6">
+            <div className="flex flex-row justify-between">
+              <TokenWidget />
+              <AmountWidget />
+            </div>
+            <AmountSlider />
+            <SwapPreview />
+            <div></div>
+            <div className="row-span-2">
+              <SwapButton />
+            </div>
           </div>
-          <AmountSlider />
-          <SwapPreview />
-          <SwapButton />
-        </Box>
-      </Box>
 
+        </div>
+      </div>
     </Container>
   )
 }
