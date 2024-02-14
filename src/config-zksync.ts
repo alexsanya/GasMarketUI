@@ -9,4 +9,7 @@ export const EXPLORER_URL="https://explorer.zksync.io/"
 export const GAS_UNIT_NAME = "ETH"
 export const ORDER_MAX_TTL_SEC = 600
 export const DEFAULT_BLOCK = 23388492
+export const SUPPORTED_TOKENS = [
+  "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
+]
 

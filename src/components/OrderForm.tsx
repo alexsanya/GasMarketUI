@@ -62,7 +62,7 @@ export function OrderForm() {
 
 
   useEffect(() => {
-    console.log('Watiching events ', permitSignature)
+    console.log('Watching events ', permitSignature)
     watchContractEvent(
       {
         address: GAS_BROKER_ADDRESS,

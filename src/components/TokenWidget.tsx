@@ -1,4 +1,5 @@
 import React from 'react';
+import useConfig from '../hooks/useConfig'
 import { TokenDropdown } from './TokenDropdown';
 
 const styles = {
@@ -24,11 +25,13 @@ const Label = (props) => {
 };
 
 
-export const TokenWidget = () => {
+export const TokenWidget = ({ tokens }) => {
+  const { SUPPORTED_TOKENS } = useConfig()
+
   return (
     <div className="flex flex-col">
       <Label text="Token"/>
-      <TokenDropdown />
+      { SUPPORTED_TOKENS && <TokenDropdown supportedTokens={SUPPORTED_TOKENS}/>}
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function Order() {
         <Providers>
           <ConnectButton />
           <Connected>
-            <OrderFlow />
+            <OrderForm />
           </Connected>
         </Providers>
 

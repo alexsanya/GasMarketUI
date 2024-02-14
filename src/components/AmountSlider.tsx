@@ -44,16 +44,22 @@ const theme = createTheme({
   },
 });
 
-export const AmountSlider = () => {
-  const [value, setValue] = React.useState(60);
 
-  const onValueChange = (event) => {
-    setValue(parseInt(event.target.value, 10));
-  }
+export const AmountSlider = ({amount}) => {
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    amount.value = newValue;
+  };
 
   return (
     <div style={styles.Container}>
-      <Slider defaultValue={50} aria-label="Default" color="secondary" valueLabelDisplay="auto" />
+      <Slider
+        defaultValue={50}
+        aria-label="Default"
+        color="secondary"
+        valueLabelDisplay="auto"
+        value={amount}
+        onChange={handleChange}
+      />
     </div>
   );
 };

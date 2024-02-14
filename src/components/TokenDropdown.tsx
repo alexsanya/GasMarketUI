@@ -1,4 +1,5 @@
 import React from 'react';
+import useTokens from '../hooks/useTokens';
 
 const styles = {
   Dropdown: {
@@ -20,21 +21,13 @@ const styles = {
   },
 };
 
-const defaultProps = {
-  label: 'USDT (15 availible)',
-  values: [
-    'Option 1',
-    'Option 2',
-    'Option 3',
-  ],
-};
-
 export const TokenDropdown = (props) => {
+  const tokens = useTokens(props.supportedTokens)
   return (
     <select style={styles.Dropdown} defaultValue="">
-      <option value="" disabled hidden>{props.label ?? defaultProps.label}</option>
-      {(props.values ?? defaultProps.values).map((value) => (
-        <option value={value} key={value}>{value}</option>
+      <option value="" disabled hidden>Select token</option>
+      {tokens && tokens.map(token => (
+        <option value={token.address} key={token.address}>{`(${token.name}) ${Number(token.balance) / 10**Number(token.decimals)}`}</option>
       ))}
     </select>
   );

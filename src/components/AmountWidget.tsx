@@ -1,4 +1,5 @@
 import React from 'react';
+import { amount } from './AmountSlider';
 
 const styles = {
   Text: {
@@ -36,15 +37,15 @@ const Label = (props) => {
 
 const InputField = (props) => {
   return (
-    <input style={styles.Input} placeholder={props.text} />
+    <input style={styles.Input} value={props.value} />
   );
 };
 
-export const AmountWidget = () => {
+export const AmountWidget = ({amount}) => {
   return (
     <div className="flex flex-col">
       <Label text="Amount"/>
-      <InputField text="10 USDT" />
+      <InputField value={amount} />
     </div>
   );
 }

@@ -25,6 +25,8 @@ import { SwapPreview } from '../components/SwapPreview'
 import useMaticPrice from "../hooks/useMaticPrice"
 import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
 import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' }
+import { signal } from '@preact/signals-react';
+
 
 
 import PermitMessageSigner from './PermitMessageSigner'
@@ -32,12 +34,7 @@ import RewardMessageSigner from './RewardMessageSigner'
 
 export function OrderForm() {
   const {
-    USDC_ADDRESS,
-    GAS_BROKER_ADDRESS,
-    DEFAULT_ORDER_TTL_SEC,
-    MIN_COMISSION_USDC,
-    EXPLORER_URL,
-    GAS_UNIT_NAME
+    MIN_COMISSION_USDC
   } = useConfig()
 
   const [orderData, setOrderData] = useState(null)
@@ -55,7 +52,7 @@ export function OrderForm() {
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const { chain } = useNetwork()
 
-
+  const amount = signal(30)
 
   return (
     <Container component="main" maxwidth="xs">
@@ -67,9 +64,9 @@ export function OrderForm() {
           <div className="grid grid-rows-6">
             <div className="flex flex-row justify-between">
               <TokenWidget />
-              <AmountWidget />
+              <AmountWidget amount={amount}/>
             </div>
-            <AmountSlider />
+            <AmountSlider amount={amount}/>
             <SwapPreview />
             <div></div>
             <div className="row-span-2">

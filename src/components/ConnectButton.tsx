@@ -3,6 +3,26 @@
 import { ConnectButton as DefaultConnectButton } from '@rainbow-me/rainbowkit';
 import './connectButton.css';
 import { ConnectIcon } from './ConnectIcon';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+
+const styles = {
+  ConnectorRow: {
+    display: 'flex',
+    gap: 12,
+    margin: '10px'
+  },
+  ConnectorBox: {
+    background: 'white',
+    'border-radius': '5px',
+    padding: '10px',
+    display: 'flex',
+    alignItems: 'center' 
+  },
+  AccountBalance: {
+    'font-weight': 'bold'
+  }
+}
 
 export const ConnectButton = () => {
   return (
@@ -58,18 +78,19 @@ export const ConnectButton = () => {
                 );
               }
               return (
-                <div style={{ display: 'flex', gap: 12 }}>
+                <div style={styles.ConnectorRow}>
                   <button
                     onClick={openChainModal}
-                    style={{ display: 'flex', alignItems: 'center' }}
+                    style={styles.ConnectorBox}
                     type="button"
+                    className="flex flex-row gap-x-2"
                   >
                     {chain.hasIcon && (
                       <div
                         style={{
                           background: chain.iconBackground,
-                          width: 12,
-                          height: 12,
+                          width: 22,
+                          height: 22,
                           borderRadius: 999,
                           overflow: 'hidden',
                           marginRight: 4,
@@ -79,18 +100,23 @@ export const ConnectButton = () => {
                           <img
                             alt={chain.name ?? 'Chain icon'}
                             src={chain.iconUrl}
-                            style={{ width: 12, height: 12 }}
+                            style={{ width: 22, height: 22 }}
                           />
                         )}
                       </div>
                     )}
                     {chain.name}
+                    <KeyboardArrowDownOutlinedIcon />
                   </button>
-                  <button onClick={openAccountModal} type="button">
-                    {account.displayName}
-                    {account.displayBalance
-                      ? ` (${account.displayBalance})`
+                  <button onClick={openAccountModal} type="button" className="flex flex-row gap-x-2" style={styles.ConnectorBox}>
+                    <AccountBalanceWalletOutlinedIcon />
+                    <div style={styles.AccountBalance}>
+                      {account.displayBalance
+                      ? ` ${account.displayBalance}`
                       : ''}
+                    </div>
+                    {account.displayName}
+                    <KeyboardArrowDownOutlinedIcon />
                   </button>
                 </div>
               );
