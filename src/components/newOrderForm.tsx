@@ -17,6 +17,8 @@ import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
 import { PricesPanel } from '../components/PricesPanel'
 import { SwapButton } from '../components/SwapButton'
+import { SwapWidget } from '../components/SwapWidget'
+import { AdvancedOptions } from '../components/AdvancedOptions'
 import { TokenWidget } from '../components/TokenWidget'
 import { AmountWidget } from '../components/AmountWidget'
 import { AmountSlider } from '../components/AmountSlider'
@@ -54,29 +56,24 @@ export function OrderForm() {
 
   const amount = signal(30)
 
+
+  const styles = {
+    SwapContainer: {
+      margin: '20px'
+    }
+  }
+
   return (
-    <Container component="main" maxwidth="xs">
-      <cssbaseline />
-
-      <div className="grid h-screen grid-rows-3">
-        <div></div>
-        <div className="row-span-2">
-          <div className="grid grid-rows-6">
-            <div className="flex flex-row justify-between">
-              <TokenWidget />
-              <AmountWidget amount={amount}/>
-            </div>
-            <AmountSlider amount={amount}/>
-            <SwapPreview />
-            <div></div>
-            <div className="row-span-2">
-              <SwapButton />
-            </div>
-          </div>
-
+    <div maxwidth="xs" className="grid h-screen grid-rows-1">
+      <div className="flex flex-col justify-center">
+        <div style={styles.SwapContainer} className="flex flex-col gap-y-2">
+          <SwapWidget />
+          <AdvancedOptions />
+          <SwapButton />
         </div>
       </div>
-    </Container>
+
+    </div>
   )
 }
 

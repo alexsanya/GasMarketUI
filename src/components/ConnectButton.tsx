@@ -8,13 +8,13 @@ import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDown
 
 const styles = {
   ConnectorRow: {
+    position: 'absolute',
     display: 'flex',
-    gap: 12,
-    margin: '10px'
+    gap: 12
   },
   ConnectorBox: {
     background: 'white',
-    'border-radius': '5px',
+    'border-radius': '7px',
     padding: '10px',
     display: 'flex',
     alignItems: 'center' 
