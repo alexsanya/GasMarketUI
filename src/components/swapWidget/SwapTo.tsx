@@ -5,7 +5,7 @@ import { TokenWidget } from './TokenWidget';
 
 const styles = {
   OutputField: {
-    padding: '6px 8px',
+    padding: '8px',
     background: '#DFDEDE',
     'border-radius': '7px'
   },
