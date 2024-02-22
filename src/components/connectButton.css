@@ -11,9 +11,9 @@
   gap: 9px;
   border: 0;
   box-sizing: border-box;
-  border-radius: 24px;
-  background-color: #ffffff;
-  color: #161616;
+  border-radius: 7px;
+  background: #2A64C5;
+  color: #ffffff;
   font-size: 18px;
   font-weight: 500;
   line-height: 24px;
@@ -24,6 +24,6 @@
   font-size: 27px;
   width: 27px;
   height: 27px;
-  color: #161616;
-  fill: #161616;
+  color: #ffffff;
+  fill: #ffffff;
 }

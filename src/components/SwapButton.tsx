@@ -24,14 +24,10 @@ const styles = {
   }
 };
 
-const defaultProps = {
-  label: 'Swap'
-};
-
-export const SwapButton = (props) => {
+export const SwapButton = ({action}) => {
   return (
-    <button style={styles.Button}>
-      <span>{props.label ?? defaultProps.label}</span>
+    <button style={styles.Button} onClick={action}>
+      <span>Swap</span>
     </button>
   );
 };

@@ -1,3 +1,6 @@
+import gasBrokerZkSync from './resources/gasBrokerZkSyncABI.json' assert { type: 'json' }
+
+export const gasBrokerAbi = gasBrokerZkSync
 export const GAS_BROKER_ADDRESS = "0x5DceeeeceeC0F427a0489524cee51229952df882"
 export const USDC_ADDRESS="0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
 export const GAS_PROVIDER_ADDRESS="0xd733dE10b28D6AEe6C54B452D1C6856AC34234e4"
@@ -12,4 +15,5 @@ export const DEFAULT_BLOCK = 23388492
 export const SUPPORTED_TOKENS = [
   "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
 ]
+
 

@@ -27,9 +27,6 @@ import { SwapPreview } from '../components/SwapPreview'
 import useMaticPrice from "../hooks/useMaticPrice"
 import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
 import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' }
-import { signal } from '@preact/signals-react';
-
-
 
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
@@ -40,6 +37,7 @@ export function OrderForm() {
   } = useConfig()
 
   const [orderData, setOrderData] = useState(null)
+  const [placeOrder, setPlaceOrder] = useState(false)
   const [permitSignature, setPermitSignature] = useState('')
   const [permitMessage, setPermitMessage] = useState(null)
   const [successTabOpened, setSuccessTabOpened] = useState(false)
@@ -54,22 +52,69 @@ export function OrderForm() {
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const { chain } = useNetwork()
 
-  const amount = signal(30)
-
-
   const styles = {
     SwapContainer: {
       margin: '20px'
     }
   }
 
+  const onPermitSigned = (message, signature) => {
+    console.log('Permit message signed')
+    setPermitMessage(message)
+    setPermitSignature(signature)
+  }
+
+
+  const onRewardSigned = async (message, rewardSignature) => {
+    const { token, value, reward } = orderData
+    const order = {
+      signer: permitMessage.owner,
+      networkId: chain.id,
+      token,
+      value,
+      deadline: parseInt(permitMessage.deadline),
+      reward,
+      permitSignature,
+      rewardSignature
+    }
+
+    setState('pending')
+    const response = await fetch('/api/order', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      })
+    if (response.ok) {
+      setSuccessTabOpened(true)
+      orderForm.current.reset()
+      setOrderData(null)
+      setPermitMessage(null)
+      setPermitSignature('')
+    } else {
+      setOrderData(null)
+      setErrorTabOpened(true)
+      setState('error')
+    }
+    setOrderData(false)
+  }
+
+  const action = () => setPlaceOrder(true)
+
+
   return (
     <div maxwidth="xs" className="grid h-screen grid-rows-1">
+      { placeOrder && <>
+        <PermitMessageSigner token={orderData.token} value={orderData.value} lifetime={orderData.lifetime} onSuccess={onPermitSigned} />
+        <RewardMessageSigner permitSignature={permitSignature} value={orderData.reward} onSuccess={onRewardSigned} />
+        </>
+      }
       <div className="flex flex-col justify-center">
         <div style={styles.SwapContainer} className="flex flex-col gap-y-2">
-          <SwapWidget />
+          <SwapWidget setOrderData={setOrderData}/>
           <AdvancedOptions />
-          <SwapButton />
+          <SwapButton action={action}/>
         </div>
       </div>
 

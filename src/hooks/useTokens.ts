@@ -31,10 +31,6 @@ function useTokens(supportedTokens) {
     functionName: 'decimals'
   }))
 
-  // get names and balances for every token from SUPPORTED_TOKENS list
-
-  // return [{name, address, balance}]
-  
   const { data, error, isError, isLoading } = useContractReads({
     contracts: [
       ...tokenNames,
@@ -47,7 +43,7 @@ function useTokens(supportedTokens) {
     if (!data) return;
 
     const result = supportedTokens.map((tokenAddress, i) => ({
-      address,
+      address: tokenAddress,
       name: data[i].result,
       balance: data[i*3+1].result,
       decimals: data[i*3+2].result

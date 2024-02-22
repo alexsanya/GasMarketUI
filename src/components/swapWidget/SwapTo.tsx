@@ -1,11 +1,11 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
+import useEstimateOutput from '../../hooks/useEstimateOutput'
 import { TokenWidget } from './TokenWidget';
 
 const styles = {
   OutputField: {
-    padding: '8px',
+    padding: '11px',
     background: '#DFDEDE',
     'border-radius': '7px'
   },
@@ -14,7 +14,9 @@ const styles = {
   }
 }
 
-export const SwapTo = () => {
+export const SwapTo = ({ amountFrom, tokenData }) => {
+  const output = useEstimateOutput(amountFrom * 10**tokenData.decimals)
+
   return (
     <Paper
       component="form"
@@ -23,11 +25,9 @@ export const SwapTo = () => {
       sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}
     >
       <TokenWidget token="ETH"/>
-      <InputBase
-        sx={{ ml: 1, flex: 1 }}
-        inputProps={{style: styles.OutputInput}}
-        value="0.00388"
-      />
+      <div className="w-full" style={styles.OutputInput}>
+        {output}
+      </div>
     </Paper>
   );
 }
