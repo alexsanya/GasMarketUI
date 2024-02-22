@@ -23,7 +23,6 @@ export default async function handler(
   try {
     const { status } = await storage.store(order)
     if (status === Status.SUCCESS) {
-      res?.socket?.server?.io?.emit("message", order)
       res.status(201).json({ status: 'SUCCESS' })
     } else {
       throw new Error('Failed to create order')

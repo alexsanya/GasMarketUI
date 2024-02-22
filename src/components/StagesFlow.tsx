@@ -3,9 +3,8 @@ const styles = {
   ImageContainer: {
     top: '255px',
     left: '860px',
-    width: '34px',
-    'margin-left': '-18px',
-    height: '34px',
+    width: '24px',
+    height: '24px',
     borderRadius: '8px',
     backgroundImage: 'url(./image.png)',
     backgroundPosition: 'center center',
@@ -13,15 +12,15 @@ const styles = {
     backgroundRepeat: 'no-repeat',
   },
   StageName: {
-    color: '#ffffff',
-    fontSize: '24px',
+    fontSize: '16px',
     fontWeight: 400,
     lineHeight: '28px',
     'margin-left': '7px'
   },
   StagesList: {
-    'margin-left': '33px',
-    'border-left': '4px solid white'
+    background: '#dedede',
+    padding: '10px',
+    'border-radius': '10px'
   },
   StageItem: {
     'margin-bottom': '20px'
@@ -61,7 +60,7 @@ export const StagesFlow = () => {
   return (
     <ul style={styles.StagesList}>
       <li>
-        <StageItem status={StageStatus.OK} name="Validation" />
+        <StageItem status={StageStatus.OK} name="Passed validation" />
         <StageItem status={StageStatus.OK} name="Order broadcasted" />
         <StageItem status={StageStatus.OK} name="Waiting for gas provider" />
         <StageItem status={StageStatus.OK} name="Confirming 10/10 confirmations" />

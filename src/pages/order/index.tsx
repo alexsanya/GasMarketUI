@@ -4,6 +4,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { OrderForm } from '../../components/NewOrderForm'
 import { OrderFlow } from '../../components/OrderFlow'
+import { ProcessingScreen } from '../../components/ProcessingScreen'
 import Layout from '../../components/layout'
 
 import { ConnectButton } from '../../components/ConnectButton'
@@ -29,7 +30,7 @@ export default function Order() {
         <Providers>
           <ConnectButton />
           <Connected>
-            <OrderForm />
+            <ProcessingScreen />
           </Connected>
         </Providers>
 

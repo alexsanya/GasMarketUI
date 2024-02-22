@@ -2,32 +2,32 @@ import React from 'react';
 
 const styles = {
   Button: {
-    margin: 'auto',
     cursor: 'pointer',
-    top: '765px',
-    left: '982px',
-    width: '166px',
-    height: '54px',
+    margin: 'auto',
+    height: '48px',
+    width: '100%',
     padding: '0px 8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row-reverse',
+    gap: '9px',
     border: '0',
     boxSizing: 'border-box',
-    borderRadius: '2px',
-    backgroundColor: '#007a4c',
-    color: '#ffffff',
+    borderRadius: '7px',
+    backgroundColor: '#2A64C5',
+    color: '#FFFFFF',
     fontSize: '18px',
+    fontWeight: 500,
     lineHeight: '24px',
     outline: 'none',
-  },
-};
-
-const defaultProps = {
-  label: 'Back',
+  }
 };
 
 export const BackButton = (props) => {
   return (
     <button style={styles.Button}>
-      {props.label ?? defaultProps.label}
+      Back
     </button>
   );
 };
