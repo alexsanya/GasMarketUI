@@ -1,6 +1,9 @@
+// @ts-nocheck
+
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import useEstimateOutput from '../../hooks/useEstimateOutput'
+import formatETH from '../../utils/formatETH'
 import { TokenWidget } from './TokenWidget';
 
 const styles = {
@@ -15,7 +18,7 @@ const styles = {
 }
 
 export const SwapTo = ({ amountFrom, tokenData }) => {
-  const output = useEstimateOutput(amountFrom * 10**tokenData.decimals, tokenData.address)
+  const output = useEstimateOutput(amountFrom, tokenData.address)
 
   return (
     <Paper
@@ -26,7 +29,7 @@ export const SwapTo = ({ amountFrom, tokenData }) => {
     >
       <TokenWidget token="ETH"/>
       <div className="w-full" style={styles.OutputInput}>
-        {output}
+        {formatETH(output)}
       </div>
     </Paper>
   );

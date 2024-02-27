@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const styles = {
   Icon: {
     fontSize: '27px',

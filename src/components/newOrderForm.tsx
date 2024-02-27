@@ -31,7 +31,7 @@ import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' 
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
 
-export function OrderForm({ setState, permitSignature, setPermitSignature }) {
+export function OrderForm({ setState, permitSignature, setPermitSignature, amountFrom, setAmountFrom, tokenData, setTokenData }) {
   const {
     MIN_COMISSION_USDC
   } = useConfig()
@@ -59,6 +59,7 @@ export function OrderForm({ setState, permitSignature, setPermitSignature }) {
   const onRewardSigned = async (message, rewardSignature) => {
     const { token, value, reward } = orderData
     const order = {
+
       signer: permitMessage.owner,
       networkId: chain.id,
       token,
@@ -99,7 +100,14 @@ export function OrderForm({ setState, permitSignature, setPermitSignature }) {
       }
       <div className="flex flex-col justify-center">
         <div style={styles.SwapContainer} className="flex flex-col gap-y-2">
-          <SwapWidget setOrderData={setOrderData}/>
+          <SwapWidget 
+            setOrderData={setOrderData}
+            amountFrom={amountFrom}
+            setAmountFrom={setAmountFrom}
+            tokenData={tokenData}
+            setTokenData={setTokenData}
+
+          />
           <AdvancedOptions />
           <SwapButton action={action}/>
         </div>

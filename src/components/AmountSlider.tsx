@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import Slider from '@mui/material/Slider';
 import { createTheme } from '@mui/material/styles';

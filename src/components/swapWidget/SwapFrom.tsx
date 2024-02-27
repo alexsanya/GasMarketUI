@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import {  effect } from "@preact/signals-core";
@@ -68,12 +70,11 @@ export const SwapFrom = ({ setTokenData, supportedTokens, fromValue, setFromValu
         displayEmpty
         inputProps={{style: {padding:'5px'}}}
         onChange={updateFromToken}
-        inputProps={{ "aria-label": "Without label" }}
         input={<BootstrapInput />}
       >
         {
-          tokens && tokens.map(tokenData => (
-            <MenuItem value={tokenData.name}>
+          tokens && tokens.map((tokenData, i) => (
+            <MenuItem value={tokenData.name} key={i}>
               <TokenWidget token={tokenData.name} />
             </MenuItem>
           ))

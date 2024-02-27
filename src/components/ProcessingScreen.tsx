@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { keccak256 } from 'viem'
 import { useState, useEffect } from 'react'
 import { watchContractEvent } from '@wagmi/core'
@@ -5,6 +7,8 @@ import { SwapDetails } from './SwapDetails'
 import { StagesFlow } from './StagesFlow'
 import { TransactionData } from './TransactionData'
 import { BackButton } from './BackButton'
+import useEstimateOutput from '../hooks/useEstimateOutput'
+import useConfig from '../hooks/useConfig'
 
 const styles = {
   Caption: {
@@ -14,19 +18,24 @@ const styles = {
   }
 }
 
-export function ProcessingScreen({permitSignature, gasBrokerAddress, gasBrokerAbi}) {
+export function ProcessingScreen({permitSignature, tokenData, amountFrom}) {
 
   const [transactionHash, setTransactionHash] = useState('')
+
+  const {
+    GAS_BROKER_ADDRESS,
+    gasBrokerAbi
+  } = useConfig()
 
   useEffect(() => {
     console.log('Watching events ')
     console.log({
       permitSignature,
-      gasBrokerAddress
+      GAS_BROKER_ADDRESS
     })
     watchContractEvent(
       {
-        address: gasBrokerAddress,
+        address: GAS_BROKER_ADDRESS,
         abi: gasBrokerAbi,
         eventName: 'Swap',
       },
@@ -39,15 +48,21 @@ export function ProcessingScreen({permitSignature, gasBrokerAddress, gasBrokerAb
         }
       }
     )
-  }, [permitSignature, gasBrokerAddress, gasBrokerAbi])
+  }, [permitSignature, GAS_BROKER_ADDRESS, gasBrokerAbi])
 
+
+  const output = useEstimateOutput(amountFrom, tokenData.address)
+  console.log({
+    amountFrom,
+    token: tokenData.address
+  })
 
   return (
     <div maxwidth="xs" className="grid h-screen grid-rows-1">
       <div className="flex flex-col justify-center">
         <div style={{margin: '20px'}} className="flex flex-col gap-y-5">
           <h1 style={styles.Caption}>Done</h1>
-          <SwapDetails fromToken={"Tether USD"} fromValue={10000000n} toToken={"ETH"} toValue={338n*10n**11n} />
+          <SwapDetails fromToken={tokenData.name} fromValue={amountFrom} toToken={"ETH"} toValue={output} />
           <StagesFlow />
           { transactionHash && <TransactionData hash={transactionHash} /> }
           <BackButton />

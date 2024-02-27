@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { BackButton } from '../components/BackButton'
 import { StagesFlow } from '../components/StagesFlow'
 
@@ -39,7 +41,7 @@ const CloseIcon = () => (
 
 export function OrderFlow() {
   return (
-    <div class="flex flex-col justify-between">
+    <div className="flex flex-col justify-between">
       <div style={styles.Box} className="flex flex-col">
         <div className="flex flex-row justify-end w-full">
           <CloseIcon />

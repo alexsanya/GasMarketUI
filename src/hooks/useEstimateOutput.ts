@@ -2,7 +2,6 @@
 
 import { usePublicClient } from 'wagmi'
 import { useEffect, useState } from 'react'
-import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
 
 function useEstimateOutput(value, tokenAddress) {
@@ -20,7 +19,7 @@ function useEstimateOutput(value, tokenAddress) {
           functionName: 'getEthAmount', 
           args: PROVIDE_TOKEN_ADDRESS ? [tokenAddress, value] : [value]
         })
-        setOutput(formatETH(result))
+        setOutput(result)
       } catch (error) {
           console.error('Error estimating gas:', error)
       }

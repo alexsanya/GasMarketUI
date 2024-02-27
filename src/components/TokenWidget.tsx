@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import useConfig from '../hooks/useConfig'
 import { TokenDropdown } from './TokenDropdown';

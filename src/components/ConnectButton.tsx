@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use client'
 
 import { ConnectButton as DefaultConnectButton } from '@rainbow-me/rainbowkit';

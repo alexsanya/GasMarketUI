@@ -1,4 +1,5 @@
 import { TokenWidget } from './swapWidget/TokenWidget'
+import { ETHWidget } from './swapWidget/ETHWidget'
 import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
 
 const styles = {
@@ -14,7 +15,7 @@ export function SwapDetails({ fromToken, fromValue, toToken, toValue }) {
     <div className="flex flex-row" style={{ width: '50%', margin: 'auto'}}>
       <TokenWidget token={fromToken} value={fromValue} style={styles.TokenCard} />
       <ArrowForwardOutlinedIcon style={{ margin: 'auto' }} />
-      <TokenWidget token={toToken} value={toValue} style={styles.TokenCard} />
+      <ETHWidget value={toValue} style={styles.TokenCard} />
     </div>
   )
 }

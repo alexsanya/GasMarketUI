@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { SwapFrom } from './SwapFrom'
 import useConfig from '../../hooks/useConfig'
@@ -10,29 +12,30 @@ const styles = {
   }
 }
 
-export function SwapFromPanel({ setAmountFrom, tokenData, setTokenData }) {
+export function SwapFromPanel({ amountFrom, setAmountFrom, tokenData, setTokenData }) {
   const { SUPPORTED_TOKENS } = useConfig();
+
+  const getNormalizedBalance = (balance) => {
+    return balance / 10**tokenData.decimals
+  }
+
   const [fromValue, setFromValue] = useState(0);
 
-  useEffect(() => {
-    setAmountFrom(fromValue)
-  }, [ fromValue ])
-
-
-  const getNormalizedBalance = () => {
-    return Number(tokenData.balance) / 10**tokenData.decimals
-  }
-
   const setMaxBalance = () => {
-    setFromValue(getNormalizedBalance())
+    setFromValue(getNormalizedBalance(Number(tokenData.balance)))
+
   }
+
+  useEffect(() => {
+    setAmountFrom(fromValue * 10**tokenData.decimals)
+  }, [fromValue])
 
   return (
     <div class = "flex flex-col">
       <div class="flex flex-row justify-between" style={{ 'margin-bottom': '3px'}}>
         <div>Token and Amount</div>
         <div>
-          Balance {getNormalizedBalance()}
+          Balance {getNormalizedBalance(Number(tokenData.balance))}
           <span className="underline" style={styles.MaxButton} onClick={setMaxBalance}>Max</span>
         </div>
       </div>
