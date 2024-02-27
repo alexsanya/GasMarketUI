@@ -31,23 +31,14 @@ import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' 
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
 
-export function OrderForm() {
+export function OrderForm({ setState, permitSignature, setPermitSignature }) {
   const {
     MIN_COMISSION_USDC
   } = useConfig()
 
   const [orderData, setOrderData] = useState(null)
   const [placeOrder, setPlaceOrder] = useState(false)
-  const [permitSignature, setPermitSignature] = useState('')
   const [permitMessage, setPermitMessage] = useState(null)
-  const [successTabOpened, setSuccessTabOpened] = useState(false)
-  const [errorTabOpened, setErrorTabOpened] = useState(false)
-  const [suggestedReward, setSuggestedReward] = useState(MIN_COMISSION_USDC)
-
-  const maticPrice = useMaticPrice()
-  const transactionCostInUSD = useTransactionCostInUSD()
-  const [state, setState] = useState('initial')
-  const [transactionHash, setTransactionHash] = useState(null)
 
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const { chain } = useNetwork()
@@ -78,7 +69,8 @@ export function OrderForm() {
       rewardSignature
     }
 
-    setState('pending')
+    setState('processing')
+
     const response = await fetch('/api/order', {
         method: 'POST',
         headers: {
@@ -87,15 +79,10 @@ export function OrderForm() {
         body: JSON.stringify(order),
       })
     if (response.ok) {
-      setSuccessTabOpened(true)
-      orderForm.current.reset()
       setOrderData(null)
       setPermitMessage(null)
-      setPermitSignature('')
     } else {
       setOrderData(null)
-      setErrorTabOpened(true)
-      setState('error')
     }
     setOrderData(false)
   }

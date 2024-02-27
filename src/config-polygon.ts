@@ -1,6 +1,7 @@
 import gasBrokerPolygon from './resources/gasBrokerABI.json' assert { type: 'json' }
 
 export const gasBrokerAbi = gasBrokerPolygon
+export const PROVIDE_TOKEN_ADDRESS = true
 
 export const GAS_BROKER_ADDRESS = "0x92f1C3d951018C90C364c234ff5fEE00f334072F"
 export const USDC_ADDRESS="0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"

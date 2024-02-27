@@ -8,6 +8,8 @@ const configMap = {
   [zkSync.id]: zksyncConfig
 }
 
+export const BROADCASTER_URL = "http://137.184.222.12:8085/order"
+
 export function getConfig(chainId) {
   return configMap[chainId];
 }

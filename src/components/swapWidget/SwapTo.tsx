@@ -15,7 +15,7 @@ const styles = {
 }
 
 export const SwapTo = ({ amountFrom, tokenData }) => {
-  const output = useEstimateOutput(amountFrom * 10**tokenData.decimals)
+  const output = useEstimateOutput(amountFrom * 10**tokenData.decimals, tokenData.address)
 
   return (
     <Paper

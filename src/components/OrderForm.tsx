@@ -127,7 +127,6 @@ export function OrderForm() {
       orderForm.current.reset()
       setOrderData(null)
       setPermitMessage(null)
-      setPermitSignature('')
     } else {
       setOrderData(null)
       setErrorTabOpened(true)

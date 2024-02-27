@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react'
 import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
 
-function useEstimateOutput(value) {
+function useEstimateOutput(value, tokenAddress) {
   const client = usePublicClient()
   const [output, setOutput] = useState(0)
-  const { GAS_BROKER_ADDRESS, gasBrokerAbi } = useConfig()
+  const { GAS_BROKER_ADDRESS, gasBrokerAbi, PROVIDE_TOKEN_ADDRESS } = useConfig()
 
   useEffect(() => {
     async function estimateOutput() {
@@ -18,7 +18,7 @@ function useEstimateOutput(value) {
           address: GAS_BROKER_ADDRESS,
           abi: gasBrokerAbi,
           functionName: 'getEthAmount', 
-          args: [value]
+          args: PROVIDE_TOKEN_ADDRESS ? [tokenAddress, value] : [value]
         })
         setOutput(formatETH(result))
       } catch (error) {

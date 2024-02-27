@@ -14,7 +14,7 @@ const styles = {
   StageName: {
     fontSize: '16px',
     fontWeight: 400,
-    lineHeight: '28px',
+    lineHeight: '22px',
     'margin-left': '7px'
   },
   StagesList: {
