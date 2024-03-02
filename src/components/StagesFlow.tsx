@@ -97,7 +97,7 @@ export const StagesFlow = ({ state }) => {
     <ul style={styles.StagesList}>
       {
         statusStagesMap[state].map((status, i) => (
-          <li>
+          <li key={i}>
             <StageItem status={status} name={status !== StageStatus.ERROR ? stageNames[i][0] : stageNames[i][1]}/>
           </li>
         ))
