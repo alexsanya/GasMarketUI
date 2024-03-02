@@ -15,23 +15,17 @@ import { watchContractEvent } from '@wagmi/core'
 import { keccak256 } from 'viem'
 import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
+import { state, OrderState } from '../signals'
 import { PricesPanel } from '../components/PricesPanel'
 import { SwapButton } from '../components/SwapButton'
 import { SwapWidget } from '../components/SwapWidget'
 import { AdvancedOptions } from '../components/AdvancedOptions'
-import { TokenWidget } from '../components/TokenWidget'
-import { AmountWidget } from '../components/AmountWidget'
-import { AmountSlider } from '../components/AmountSlider'
-import { SwapPreview } from '../components/SwapPreview'
 
-import useMaticPrice from "../hooks/useMaticPrice"
-import useTransactionCostInUSD from "../hooks/useTransactionCostInUSD"
-import gasBrokerAbi from '../resources/gasBrokerABI.json' assert { type: 'json' }
 
 import PermitMessageSigner from './PermitMessageSigner'
 import RewardMessageSigner from './RewardMessageSigner'
 
-export function OrderForm({ setState, permitSignature, setPermitSignature, amountFrom, setAmountFrom, tokenData, setTokenData }) {
+export function OrderForm({ permitSignature, setPermitSignature, amountFrom, setAmountFrom, tokenData, setTokenData }) {
   const {
     MIN_COMISSION_USDC
   } = useConfig()
@@ -59,7 +53,6 @@ export function OrderForm({ setState, permitSignature, setPermitSignature, amoun
   const onRewardSigned = async (message, rewardSignature) => {
     const { token, value, reward } = orderData
     const order = {
-
       signer: permitMessage.owner,
       networkId: chain.id,
       token,
@@ -70,7 +63,7 @@ export function OrderForm({ setState, permitSignature, setPermitSignature, amoun
       rewardSignature
     }
 
-    setState('processing')
+    state.value = OrderState.SUBMITTED
 
     const response = await fetch('/api/order', {
         method: 'POST',
@@ -80,9 +73,11 @@ export function OrderForm({ setState, permitSignature, setPermitSignature, amoun
         body: JSON.stringify(order),
       })
     if (response.ok) {
+      state.value = OrderState.BROADCASTED
       setOrderData(null)
       setPermitMessage(null)
     } else {
+      state.value = OrderState.INVALID
       setOrderData(null)
     }
     setOrderData(false)

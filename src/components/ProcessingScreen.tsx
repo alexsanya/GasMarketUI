@@ -9,6 +9,8 @@ import { TransactionData } from './TransactionData'
 import { BackButton } from './BackButton'
 import useEstimateOutput from '../hooks/useEstimateOutput'
 import useConfig from '../hooks/useConfig'
+import { state, reward, OrderState } from '../signals'
+import { useSignals } from '@preact/signals-react/runtime'
 
 const styles = {
   Caption: {
@@ -27,6 +29,8 @@ export function ProcessingScreen({permitSignature, tokenData, amountFrom}) {
     gasBrokerAbi
   } = useConfig()
 
+  useSignals()
+
   useEffect(() => {
     console.log('Watching events ')
     console.log({
@@ -44,6 +48,7 @@ export function ProcessingScreen({permitSignature, tokenData, amountFrom}) {
         console.log({permitSignature, permitHash});
         const swapEvent = events.find(event => event.args.permitHash === permitHash)
         if (swapEvent) {
+          state.value = OrderState.COMPLETED
           setTransactionHash(swapEvent.transactionHash);
         }
       }
@@ -51,7 +56,7 @@ export function ProcessingScreen({permitSignature, tokenData, amountFrom}) {
   }, [permitSignature, GAS_BROKER_ADDRESS, gasBrokerAbi])
 
 
-  const output = useEstimateOutput(amountFrom, tokenData.address)
+  const output = useEstimateOutput(amountFrom - reward.value, tokenData.address)
   console.log({
     amountFrom,
     token: tokenData.address
@@ -63,7 +68,7 @@ export function ProcessingScreen({permitSignature, tokenData, amountFrom}) {
         <div style={{margin: '20px'}} className="flex flex-col gap-y-5">
           <h1 style={styles.Caption}>Done</h1>
           <SwapDetails fromToken={tokenData.name} fromValue={amountFrom} toToken={"ETH"} toValue={output} />
-          <StagesFlow />
+          <StagesFlow state={state.value} />
           { transactionHash && <TransactionData hash={transactionHash} /> }
           <BackButton />
         </div>

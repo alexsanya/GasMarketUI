@@ -1,7 +1,8 @@
 // @ts-nocheck
 
 import '@rainbow-me/rainbowkit/styles.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSignals } from '@preact/signals-react/runtime'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { OrderForm } from '../../components/newOrderForm'
 import { ProcessingScreen } from '../../components/ProcessingScreen'
@@ -10,6 +11,8 @@ import Layout from '../../components/Layout'
 import { ConnectButton } from '../../components/ConnectButton'
 import { Connected } from '../../components/Connected'
 import { Providers } from '../../app/providers'
+import useConfig from '../../hooks/useConfig'
+import { state, reward, lifetime, OrderState } from '../../signals'
 
 const defaultTheme = createTheme({
   palette: {
@@ -22,11 +25,19 @@ const defaultTheme = createTheme({
   },
 });
 
+
 export default function Order() {
-  const [state, setState] = useState('placeOrder')
+  const { MIN_COMISSION, DEFAULT_ORDER_TTL_SEC } = useConfig()
   const [amountFrom, setAmountFrom] = useState(0)
-  const [tokenData, setTokenData] = useState({});
+  const [tokenData, setTokenData] = useState({})
   const [permitSignature, setPermitSignature] = useState('')
+
+  useSignals()
+
+  useEffect(() => {
+    reward.value = MIN_COMISSION
+    lifetime.value = DEFAULT_ORDER_TTL_SEC
+  }, [MIN_COMISSION, DEFAULT_ORDER_TTL_SEC])
 
   return (
     <Layout>
@@ -35,9 +46,8 @@ export default function Order() {
         <Providers>
           <ConnectButton />
           <Connected>
-            {state === 'placeOrder' &&
+            {state.value === OrderState.BLANK &&
               (<OrderForm
-                setState={setState}
                 permitSignature={permitSignature}
                 setPermitSignature={setPermitSignature}
                 amountFrom={amountFrom}
@@ -46,7 +56,7 @@ export default function Order() {
                 setTokenData={setTokenData}
               />)
             }
-            {state === 'processing' && (
+            {state.value !== OrderState.BLANK && (
               <ProcessingScreen
                 permitSignature={permitSignature}
                 tokenData={tokenData}

@@ -5,6 +5,8 @@ import Paper from '@mui/material/Paper';
 import useEstimateOutput from '../../hooks/useEstimateOutput'
 import formatETH from '../../utils/formatETH'
 import { TokenWidget } from './TokenWidget';
+import { reward } from '../../signals'
+import { useSignals } from '@preact/signals-react/runtime'
 
 const styles = {
   OutputField: {
@@ -18,7 +20,9 @@ const styles = {
 }
 
 export const SwapTo = ({ amountFrom, tokenData }) => {
-  const output = useEstimateOutput(amountFrom, tokenData.address)
+  useSignals()
+
+  const output = useEstimateOutput(amountFrom - reward.value, tokenData.address)
 
   return (
     <Paper

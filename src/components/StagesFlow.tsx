@@ -1,9 +1,10 @@
 // @ts-nocheck
 
+import { state, OrderState } from '../signals'
+import CircularProgress from '@mui/material/CircularProgress'
+
 const styles = {
   ImageContainer: {
-    top: '255px',
-    left: '860px',
     width: '24px',
     height: '24px',
     borderRadius: '8px',
@@ -28,45 +29,79 @@ const styles = {
   }
 };
 
-const defaultProps = {
-  image: '/images/okCircle.png',
-}
-
 const OkCircle = (props) => {
   return (
     <div style={{
       ...styles.ImageContainer,
-      backgroundImage: `url(${props.image ?? defaultProps.image})`,
+      backgroundImage: `url('/images/okCircle.png')`,
+    }} />
+  );
+};
+
+const ErrorCircle = (props) => {
+  return (
+    <div style={{
+      ...styles.ImageContainer,
+      backgroundImage: `url('/images/errorCircle.png')`,
     }} />
   );
 };
 
 
+
 enum StageStatus {
   OK,
+  LOADING,
   ERROR
 }
 
-
 const StageItem = ({status, name, last}) => {
+  if (status === StageStatus.HIDDEN) {
+    return null
+  }
   return (
     <div className="flex flex-row" style={last ? {} : styles.StageItem}>
-      <OkCircle />
+      {status === StageStatus.OK && <OkCircle />}
+      {status === StageStatus.LOADING && <CircularProgress color="inherit" style={{width: '24px', height: '24px'}} />}
+      {status === StageStatus.ERROR && <ErrorCircle />}
       <div style={styles.StageName}>{name}</div>
     </div>
   )
 }
 
-export const StagesFlow = () => {
+
+// possible states are:
+// broadcasted
+// invalid
+// queue
+// how to found out if transaction been reverted
+
+const statusStagesMap = {
+  [OrderState.SUBMITTED]: [StageStatus.LOADING],
+  [OrderState.INVALID]: [StageStatus.ERROR],
+  [OrderState.BROADCASTED]: [StageStatus.OK, StageStatus.OK, StageStatus.LOADING],
+  [OrderState.EXPIRED]: [StageStatus.OK, StageStatus.OK, StageStatus.ERROR],
+  [OrderState.REVERTED]: [StageStatus.OK, StageStatus.OK, StageStatus.OK, StageStatus.ERROR],
+  [OrderState.COMPLETED]: [StageStatus.OK, StageStatus.OK, StageStatus.OK, StageStatus.OK]
+}
+
+const stageNames = [
+  ["Validation", "Order is invalid"],
+  ["Broadcast"],
+  ["Waiting for gas provider", "Order is expired"],
+  ["Order completed", "Transaction is reverted"]
+]
+
+export const StagesFlow = ({ state }) => {
   return (
     <ul style={styles.StagesList}>
-      <li>
-        <StageItem status={StageStatus.OK} name="Passed validation" />
-        <StageItem status={StageStatus.OK} name="Order broadcasted" />
-        <StageItem status={StageStatus.OK} name="Waiting for gas provider" />
-        <StageItem status={StageStatus.OK} name="Confirming 10/10 confirmations" />
-        <StageItem status={StageStatus.OK} name="Order completed" last={true} />
-      </li>
+      {
+        statusStagesMap[state].map((status, i) => (
+          <li>
+            <StageItem status={status} name={status !== StageStatus.ERROR ? stageNames[i][0] : stageNames[i][1]}/>
+          </li>
+        ))
+      }
     </ul>
   )
 }

@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import React from 'react';
+import { state, OrderState } from '../signals'
 
 const styles = {
   Button: {
@@ -27,8 +28,12 @@ const styles = {
 };
 
 export const BackButton = (props) => {
+  const goBack = () => {
+    state.value = OrderState.BLANK
+  }
+
   return (
-    <button style={styles.Button}>
+    <button style={styles.Button} onClick={goBack}>
       Back
     </button>
   );

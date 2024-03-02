@@ -3,14 +3,16 @@ import ArrowDownwardOutlinedIcon from '@mui/icons-material/ArrowDownwardOutlined
 import { SwapFromPanel } from './swapWidget/SwapFromPanel'
 import { SwapTo } from './swapWidget/SwapTo'
 
+import { reward, lifetime } from '../signals'
+
 export const SwapWidget = ({ setOrderData, amountFrom, setAmountFrom, tokenData, setTokenData }) => {
 
   useEffect(() => {
     setOrderData({
       token: tokenData.address,
       value: amountFrom,
-      reward: 500000,
-      lifetime: 500
+      reward: reward.value,
+      lifetime: lifetime.value
     })
     console.log({tokenData})
   }, [ amountFrom, tokenData])
