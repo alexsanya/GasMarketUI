@@ -7,6 +7,7 @@ import './connectButton.css';
 import { ConnectIcon } from './ConnectIcon';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 
 const styles = {
   ConnectorRow: {
@@ -17,6 +18,7 @@ const styles = {
   ConnectorBox: {
     background: 'white',
     'border-radius': '7px',
+    border: '1px solid #DFDEDE',
     padding: '10px',
     display: 'flex',
     alignItems: 'center' 
@@ -74,7 +76,12 @@ export const ConnectButton = () => {
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button">
+                  <button
+                      onClick={openChainModal}
+                      style={styles.ConnectorBox}
+                      type="button"
+                    >
+                    <ReportProblemOutlinedIcon style={{'margin-right': '3px'}}/>
                     Wrong network
                   </button>
                 );
