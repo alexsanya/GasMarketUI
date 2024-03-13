@@ -30,7 +30,7 @@ export function OrderForm({ permitSignature, setPermitSignature, amountFrom, set
     MIN_COMISSION_USDC
   } = useConfig()
 
-  const [orderData, setOrderData] = useState(null)
+  const [orderData, setOrderData] = useState({})
   const [placeOrder, setPlaceOrder] = useState(false)
   const [permitMessage, setPermitMessage] = useState(null)
 
@@ -50,19 +50,7 @@ export function OrderForm({ permitSignature, setPermitSignature, amountFrom, set
   }
 
 
-  const onRewardSigned = async (message, rewardSignature) => {
-    const { token, value, reward } = orderData
-    const order = {
-      signer: permitMessage.owner,
-      networkId: chain.id,
-      token,
-      value,
-      deadline: parseInt(permitMessage.deadline),
-      reward,
-      permitSignature,
-      rewardSignature
-    }
-
+  const onRewardSigned = async (order) => {
     state.value = OrderState.SUBMITTED
 
     const response = await fetch('/api/order', {
@@ -83,16 +71,9 @@ export function OrderForm({ permitSignature, setPermitSignature, amountFrom, set
     setOrderData(false)
   }
 
-  const action = () => setPlaceOrder(true)
-
 
   return (
     <div maxwidth="xs" className="grid h-screen grid-rows-1">
-      { placeOrder && <>
-        <PermitMessageSigner token={orderData.token} value={orderData.value} lifetime={orderData.lifetime} onSuccess={onPermitSigned} />
-        <RewardMessageSigner permitSignature={permitSignature} value={orderData.reward} onSuccess={onRewardSigned} />
-        </>
-      }
       <div className="flex flex-col justify-center">
         <div style={styles.SwapContainer} className="flex flex-col gap-y-2">
           <SwapWidget 
@@ -104,7 +85,14 @@ export function OrderForm({ permitSignature, setPermitSignature, amountFrom, set
 
           />
           <AdvancedOptions />
-          <SwapButton action={action}/>
+          { orderData.value &&
+            <SwapButton
+              token={orderData.token}
+              value={orderData.value}
+              reward={orderData.reward}
+              lifetime={orderData.lifetime}
+              onPermitSigned={onPermitSigned}
+              onOrderSigned={onRewardSigned}/>}
         </div>
       </div>
 

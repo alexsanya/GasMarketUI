@@ -1,6 +1,11 @@
 // @ts-nocheck
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useAccount, useSignTypedData, useNetwork } from 'wagmi'
+import useDomain from '../hooks/useDomain'
+import usePermitMessage from '../hooks/usePermitMessage'
+import RewardMessageSigner from './RewardMessageSigner'
+import permitTypes from '../resources/permitTypes.json' assert { type: 'json' }
 
 const styles = {
   Button: {
@@ -26,11 +31,49 @@ const styles = {
   }
 };
 
-export const SwapButton = ({action}) => {
+export const SwapButton = ({ token, value, reward, lifetime, onOrderSigned }) => {
+  const domain = useDomain(token)
+  const { address } = useAccount()
+  const { chain } = useNetwork()
+  const message = usePermitMessage(address, token, value, lifetime)
+
+  const { data, isError, isLoading, isSuccess, signTypedData } =
+    useSignTypedData({
+      domain,
+      primaryType: 'Permit',
+      types: permitTypes,
+      message
+    })
+
+  const onRewardSigned = (rewardMessage, rewardSignature) => {
+    console.log('Order is signed')
+    console.log({message})
+    const order = {
+      signer: message.owner,
+      networkId: chain.id,
+      token,
+      value,
+      deadline: parseInt(message.deadline),
+      reward,
+      permitSignature: data,
+      rewardSignature
+    }
+    onOrderSigned(order)
+  }
+
+
+  const signOrder = async () => {
+    console.log({token, value, lifetime, domain, address, message})
+    signTypedData()
+  }
+
   return (
-    <button style={styles.Button} onClick={action}>
-      <span>Swap</span>
-    </button>
+    <>
+      <button style={styles.Button} onClick={signOrder}>
+        <span>Swap</span>
+      </button>
+      { data &&  <RewardMessageSigner permitSignature={data} value={reward} onSuccess={onRewardSigned}/>}
+    </>
   );
 };
 

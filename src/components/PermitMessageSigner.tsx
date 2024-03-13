@@ -1,24 +1,32 @@
 // @ts-nocheck
 
 import { useAccount, useSignTypedData } from 'wagmi'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import permitTypes from '../resources/permitTypes.json' assert { type: 'json' }
 import usePermitMessage from '../hooks/usePermitMessage'
 import useDomain from '../hooks/useDomain'
 
-
 const MessageSignerWithAddress = ({ token, value, lifetime, onSuccess }) => {
-  const { address, isConnected } = useAccount()
+  const domain = useDomain(token)
+  const { address } = useAccount()
+  const message = usePermitMessage(address, token, value, lifetime)
+  const [renderPermit, setRenderPermit] = useState(false)
+
+  useEffect(() => {
+    if (!renderPermit) {
+      setRenderPermit(address && token && domain && message)
+    }
+  }, [address, token, domain, message])
+
+
   return (
-    address && token &&
-    <MessageSigner address={address} value={value} token={token} lifetime={lifetime} onSuccess={onSuccess} />
+    renderPermit &&
+    <MessageSigner domain={domain} message={message} onSuccess={onSuccess} />
   )
 }
 
-const MessageSigner = ({ address, token, value, lifetime, onSuccess }) => {
-  const domain = useDomain(token)
-  const message = usePermitMessage(address, token, value, lifetime)
+const MessageSigner = ({ domain, message, onSuccess }) => {
 
   const { data, isError, isLoading, isSuccess, signTypedData } =
     useSignTypedData({
@@ -29,17 +37,20 @@ const MessageSigner = ({ address, token, value, lifetime, onSuccess }) => {
   })
 
   useEffect(() => {
-    if (isSuccess) {
-      console.log('[MessageSigner] call onSuccess', { message, data })
+
+    console.log({data})
+    if (data) {
+      console.log('[MessageSigner] call onSuccess', { message, domain, data })
       onSuccess(message, data);
     }
-  }, [isSuccess])
+  }, [data])
 
   useEffect(() => {
-    if (domain && message && !isLoading) {
+    if (signTypedData) {
+      console.log('Calling signTypedData')
       signTypedData()
     }
-  }, [domain, message])
+  }, [signTypedData])
 
 
 
