@@ -21,18 +21,13 @@ import { SwapButton } from '../components/SwapButton'
 import { SwapWidget } from '../components/SwapWidget'
 import { AdvancedOptions } from '../components/AdvancedOptions'
 
-
-import PermitMessageSigner from './PermitMessageSigner'
-import RewardMessageSigner from './RewardMessageSigner'
-
-export function OrderForm({ permitSignature, setPermitSignature, amountFrom, setAmountFrom, tokenData, setTokenData }) {
+export function OrderForm({ amountFrom, setAmountFrom, tokenData, setTokenData }) {
   const {
     MIN_COMISSION_USDC
   } = useConfig()
 
   const [orderData, setOrderData] = useState({})
   const [placeOrder, setPlaceOrder] = useState(false)
-  const [permitMessage, setPermitMessage] = useState(null)
 
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const { chain } = useNetwork()
@@ -42,13 +37,6 @@ export function OrderForm({ permitSignature, setPermitSignature, amountFrom, set
       margin: '20px'
     }
   }
-
-  const onPermitSigned = (message, signature) => {
-    console.log('Permit message signed')
-    setPermitMessage(message)
-    setPermitSignature(signature)
-  }
-
 
   const onRewardSigned = async (order) => {
     state.value = OrderState.SUBMITTED
@@ -63,7 +51,6 @@ export function OrderForm({ permitSignature, setPermitSignature, amountFrom, set
     if (response.ok) {
       state.value = OrderState.BROADCASTED
       setOrderData(null)
-      setPermitMessage(null)
     } else {
       state.value = OrderState.INVALID
       setOrderData(null)
@@ -91,7 +78,6 @@ export function OrderForm({ permitSignature, setPermitSignature, amountFrom, set
               value={orderData.value}
               reward={orderData.reward}
               lifetime={orderData.lifetime}
-              onPermitSigned={onPermitSigned}
               onOrderSigned={onRewardSigned}/>}
         </div>
       </div>

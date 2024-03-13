@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import React, { useEffect } from 'react';
+import { permitSignature } from '../signals'
 import { useAccount, useSignTypedData, useNetwork } from 'wagmi'
 import useDomain from '../hooks/useDomain'
 import usePermitMessage from '../hooks/usePermitMessage'
@@ -48,6 +49,7 @@ export const SwapButton = ({ token, value, reward, lifetime, onOrderSigned }) =>
   const onRewardSigned = (rewardMessage, rewardSignature) => {
     console.log('Order is signed')
     console.log({message})
+    permitSignature.value = data
     const order = {
       signer: message.owner,
       networkId: chain.id,

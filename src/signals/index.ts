@@ -13,3 +13,4 @@ export enum OrderState {
 export const reward = signal(0)
 export const lifetime = signal(0)
 export const state = signal(OrderState.BLANK)
+export const permitSignature = signal("")

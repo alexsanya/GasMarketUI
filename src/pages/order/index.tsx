@@ -12,7 +12,7 @@ import { ConnectButton } from '../../components/ConnectButton'
 import { Connected } from '../../components/Connected'
 import { Providers } from '../../app/providers'
 import useConfig from '../../hooks/useConfig'
-import { state, reward, lifetime, OrderState } from '../../signals'
+import { state, reward, lifetime, permitSignature, OrderState } from '../../signals'
 
 const defaultTheme = createTheme({
   palette: {
@@ -30,7 +30,6 @@ export default function Order() {
   const { MIN_COMISSION, DEFAULT_ORDER_TTL_SEC } = useConfig()
   const [amountFrom, setAmountFrom] = useState(0)
   const [tokenData, setTokenData] = useState({})
-  const [permitSignature, setPermitSignature] = useState('')
 
   useSignals()
 
@@ -48,8 +47,6 @@ export default function Order() {
           <Connected>
             {state.value === OrderState.BLANK &&
               (<OrderForm
-                permitSignature={permitSignature}
-                setPermitSignature={setPermitSignature}
                 amountFrom={amountFrom}
                 setAmountFrom={setAmountFrom}
                 tokenData={tokenData}
@@ -58,7 +55,7 @@ export default function Order() {
             }
             {state.value !== OrderState.BLANK && (
               <ProcessingScreen
-                permitSignature={permitSignature}
+                permitSignature={permitSignature.value}
                 tokenData={tokenData}
                 amountFrom={amountFrom}
               />
