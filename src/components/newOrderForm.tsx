@@ -17,7 +17,7 @@ import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
 import { state, OrderState } from '../signals'
 import { PricesPanel } from '../components/PricesPanel'
-import { SwapButton } from '../components/SwapButton'
+import { SwapButton, DisabledSwapButton } from '../components/SwapButton'
 import { SwapWidget } from '../components/SwapWidget'
 import { AdvancedOptions } from '../components/AdvancedOptions'
 
@@ -72,13 +72,13 @@ export function OrderForm({ amountFrom, setAmountFrom, tokenData, setTokenData }
 
           />
           <AdvancedOptions />
-          { orderData.value &&
-            <SwapButton
+          { (orderData.value &&
+            (<SwapButton
               token={orderData.token}
               value={orderData.value}
               reward={orderData.reward}
               lifetime={orderData.lifetime}
-              onOrderSigned={onRewardSigned}/>}
+              onOrderSigned={onRewardSigned}/>)) || <DisabledSwapButton />}
         </div>
       </div>
 

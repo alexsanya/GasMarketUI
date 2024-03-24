@@ -8,8 +8,7 @@ import usePermitMessage from '../hooks/usePermitMessage'
 import RewardMessageSigner from './RewardMessageSigner'
 import permitTypes from '../resources/permitTypes.json' assert { type: 'json' }
 
-const styles = {
-  Button: {
+const generalStyles = {
     cursor: 'pointer',
     margin: 'auto',
     height: '48px',
@@ -23,12 +22,22 @@ const styles = {
     border: '0',
     boxSizing: 'border-box',
     borderRadius: '7px',
-    backgroundColor: '#2A64C5',
     color: '#FFFFFF',
     fontSize: '18px',
     fontWeight: 500,
     lineHeight: '24px',
     outline: 'none',
+
+}
+
+const styles = {
+  Button: {
+    ...generalStyles,
+    backgroundColor: '#2A64C5'
+  },
+  DisabledButton: {
+    ...generalStyles,
+    backgroundColor: '#DFDEDE'
   }
 };
 
@@ -78,4 +87,12 @@ export const SwapButton = ({ token, value, reward, lifetime, onOrderSigned }) =>
     </>
   );
 };
+
+export const DisabledSwapButton = () => {
+  return (
+    <button style={styles.DisabledButton}>
+      <span>Swap</span>
+    </button>
+  )
+}
 
