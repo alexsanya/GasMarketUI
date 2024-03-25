@@ -7,6 +7,7 @@ import useDecimals from '../hooks/useDecimals'
 import useConfig from '../hooks/useConfig'
 import formatETH from '../utils/formatETH'
 import useMaticPrice from '../hooks/useMaticPrice'
+import useSuggestedFee from '../hooks/useSuggestedFee'
 import { useFeeData } from "wagmi"
 
 const styles = {
@@ -40,6 +41,9 @@ const RewardInput = styled(InputBase)(() => ({
 }));
 
 export const AdvancedOptions = ({ token }) => {
+
+  useSignals()
+
   const [rewardValue, setRewardValue] = useState(reward.value)
   const [ttlValue, setTtlValue] = useState(lifetime.value)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -47,9 +51,8 @@ export const AdvancedOptions = ({ token }) => {
   const nativeGasTokenPrice = useMaticPrice()
   const { data: feeData, isError, isLoading } = useFeeData()
   const { DEFAULT_ORDER_TTL_SEC, SWAP_GAS_REQUIRED, MIN_COMISSION } = useConfig()
-  const [suggestedFee, setSuggestedFee] = useState(MIN_COMISSION)
+  const suggestedFee = useSuggestedFee(token)
   
-  useSignals()
 
   const updateRewardValue = (event: SelectChangeEvent) => {
     setRewardValue(event.target.value)
@@ -69,24 +72,13 @@ export const AdvancedOptions = ({ token }) => {
 
   useEffect(() => {
     setRewardValue(reward.value / 10**tokenDecimals)
-  }, [tokenDecimals])
-
+  }, [tokenDecimals, reward.value])
 
   useEffect(() => {
     if (parseFloat(rewardValue)) {
       reward.value = rewardValue * 10**tokenDecimals
     }
   }, [rewardValue])
-
-  useEffect(() => {
-    if (feeData && feeData?.gasPrice && SWAP_GAS_REQUIRED && tokenDecimals) {
-      const transactionFeeUSD = SWAP_GAS_REQUIRED * nativeGasTokenPrice * Number(feeData?.gasPrice) / 10**18;
-      setSuggestedFee(Math.max(MIN_COMISSION, 2*transactionFeeUSD*10**tokenDecimals));
-      console.log({transactionFeeUSD})
-      console.log({tokenDecimals})
-      console.log('Transaction cost:', transactionFeeUSD*10**tokenDecimals)
-    }
-  }, [feeData, SWAP_GAS_REQUIRED, MIN_COMISSION, nativeGasTokenPrice, tokenDecimals])
 
   return (
     <>
@@ -95,9 +87,9 @@ export const AdvancedOptions = ({ token }) => {
       </div>
       <div className="flex flex-col" style={ showAdvanced ? {} : { display: 'none' } }>
         <div className="flex flex-row gap-1">
-          <div>Gas price: {formatETH(feeData?.gasPrice)} /</div>
+          <div>Gas price: {formatETH(feeData?.gasPrice || 0)} /</div>
           <div>ETH price: {nativeGasTokenPrice} USD /</div>
-          <div>Transaction cost: {SWAP_GAS_REQUIRED * nativeGasTokenPrice * Number(feeData?.gasPrice) / 10**18} USD</div>
+          <div>Swap cost: {SWAP_GAS_REQUIRED * nativeGasTokenPrice * Number(feeData?.gasPrice) / 10**18} USD</div>
         </div>
         <div className="flex flex-row justify-between" style={{ 'margin-bottom': '3px'}}>
           <div>Comission</div>

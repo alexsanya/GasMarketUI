@@ -34,7 +34,6 @@ export default function Order() {
   useSignals()
 
   useEffect(() => {
-    reward.value = MIN_COMISSION
     lifetime.value = DEFAULT_ORDER_TTL_SEC
   }, [MIN_COMISSION, DEFAULT_ORDER_TTL_SEC])
 

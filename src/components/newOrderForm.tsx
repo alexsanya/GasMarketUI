@@ -15,7 +15,8 @@ import { watchContractEvent } from '@wagmi/core'
 import { keccak256 } from 'viem'
 import formatETH from '../utils/formatETH'
 import useConfig from '../hooks/useConfig'
-import { state, OrderState } from '../signals'
+import useSuggestedFee from '../hooks/useSuggestedFee'
+import { state, reward, OrderState } from '../signals'
 import { PricesPanel } from '../components/PricesPanel'
 import { SwapButton, DisabledSwapButton } from '../components/SwapButton'
 import { SwapWidget } from '../components/SwapWidget'
@@ -28,9 +29,14 @@ export function OrderForm({ amountFrom, setAmountFrom, tokenData, setTokenData }
 
   const [orderData, setOrderData] = useState({})
   const [placeOrder, setPlaceOrder] = useState(false)
+  const suggestedFee = useSuggestedFee(tokenData.address)
 
   const { data: feeData, isError: isFeeError, isLoading: isFeeLoading } = useFeeData()
   const { chain } = useNetwork()
+
+  useEffect(() => {
+    reward.value = suggestedFee
+  }, [ suggestedFee ])
 
   const styles = {
     SwapContainer: {
