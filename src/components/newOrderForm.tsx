@@ -71,7 +71,7 @@ export function OrderForm({ amountFrom, setAmountFrom, tokenData, setTokenData }
             setTokenData={setTokenData}
 
           />
-          <AdvancedOptions />
+          <AdvancedOptions token={orderData.token}/>
           { (orderData.value &&
             (<SwapButton
               token={orderData.token}
