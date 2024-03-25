@@ -5,6 +5,9 @@ import InputBase from '@mui/material/InputBase';
 import { useSignals } from '@preact/signals-react/runtime'
 import useDecimals from '../hooks/useDecimals'
 import useConfig from '../hooks/useConfig'
+import formatETH from '../utils/formatETH'
+import useMaticPrice from '../hooks/useMaticPrice'
+import { useFeeData } from "wagmi"
 
 const styles = {
   AdvancedButton: {
@@ -41,7 +44,10 @@ export const AdvancedOptions = ({ token }) => {
   const [ttlValue, setTtlValue] = useState(lifetime.value)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const tokenDecimals = useDecimals(token)
-  const { DEFAULT_ORDER_TTL_SEC } = useConfig()
+  const nativeGasTokenPrice = useMaticPrice()
+  const { data: feeData, isError, isLoading } = useFeeData()
+  const { DEFAULT_ORDER_TTL_SEC, SWAP_GAS_REQUIRED, MIN_COMISSION } = useConfig()
+  const [suggestedFee, setSuggestedFee] = useState(MIN_COMISSION)
   
   useSignals()
 
@@ -51,8 +57,12 @@ export const AdvancedOptions = ({ token }) => {
   const updateTtlValue = (event: SelectChangeEvent) => {
     lifetime.value = parseInt(event.target.value)
   }
-  const setSuggestedComission = () => {}
-  const setSuggestedTTL = () => {}
+  const setSuggestedComission = () => {
+    setRewardValue(suggestedFee / 10**tokenDecimals)
+  }
+  const setSuggestedTTL = () => {
+    lifetime.value = DEFAULT_ORDER_TTL_SEC;
+  }
   const toggleAdvancedSettings = () => {
     setShowAdvanced(showAdvanced => !showAdvanced)
   }
@@ -68,16 +78,31 @@ export const AdvancedOptions = ({ token }) => {
     }
   }, [rewardValue])
 
+  useEffect(() => {
+    if (feeData && feeData?.gasPrice && SWAP_GAS_REQUIRED && tokenDecimals) {
+      const transactionFeeUSD = SWAP_GAS_REQUIRED * nativeGasTokenPrice * Number(feeData?.gasPrice) / 10**18;
+      setSuggestedFee(Math.max(MIN_COMISSION, 2*transactionFeeUSD*10**tokenDecimals));
+      console.log({transactionFeeUSD})
+      console.log({tokenDecimals})
+      console.log('Transaction cost:', transactionFeeUSD*10**tokenDecimals)
+    }
+  }, [feeData, SWAP_GAS_REQUIRED, MIN_COMISSION, nativeGasTokenPrice, tokenDecimals])
+
   return (
     <>
       <div className="underline" style={styles.AdvancedButton} onClick={toggleAdvancedSettings}>
         {showAdvanced ? 'Hide' : 'Advanced'}
       </div>
       <div className="flex flex-col" style={ showAdvanced ? {} : { display: 'none' } }>
+        <div className="flex flex-row gap-1">
+          <div>Gas price: {formatETH(feeData?.gasPrice)} /</div>
+          <div>ETH price: {nativeGasTokenPrice} USD /</div>
+          <div>Transaction cost: {SWAP_GAS_REQUIRED * nativeGasTokenPrice * Number(feeData?.gasPrice) / 10**18} USD</div>
+        </div>
         <div className="flex flex-row justify-between" style={{ 'margin-bottom': '3px'}}>
           <div>Comission</div>
           <div>
-            Suggested value: {0.5}
+            Suggested value: {suggestedFee / 10**tokenDecimals}
             <span className="underline" style={styles.SuggestedReward} onClick={setSuggestedComission}>Apply</span>
           </div>
         </div>
