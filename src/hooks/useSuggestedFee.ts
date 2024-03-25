@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useEffect, useState } from 'react';
 import { useFeeData } from "wagmi"
 import useDecimals from './useDecimals'

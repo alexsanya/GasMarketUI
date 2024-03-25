@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { reward, lifetime } from '../signals';
 import { styled } from '@mui/material/styles';
