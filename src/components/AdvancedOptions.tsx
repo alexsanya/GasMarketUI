@@ -11,6 +11,7 @@ import formatETH from '../utils/formatETH'
 import useMaticPrice from '../hooks/useMaticPrice'
 import useSuggestedFee from '../hooks/useSuggestedFee'
 import { useFeeData } from "wagmi"
+import './advancedOptions.css';
 
 const styles = {
   AdvancedButton: {
@@ -27,6 +28,8 @@ const styles = {
     color: '#326DC8',
     cursor: 'pointer',
     'margin-left': '3px'
+  },
+  AdvancedOptionsPanel: {
   }
 }
 
@@ -35,6 +38,7 @@ const RewardInput = styled(InputBase)(() => ({
     margin: 0,
   },
   '& .MuiInputBase-input': {
+    margin: 0,
     padding: '11px',
     background: '#FFFFFF',
     border: '1px solid #DFDEDE',
@@ -82,17 +86,20 @@ export const AdvancedOptions = ({ token }) => {
     }
   }, [rewardValue])
 
-  return (
-    <>
-      <div className="underline" style={styles.AdvancedButton} onClick={toggleAdvancedSettings}>
-        {showAdvanced ? 'Hide' : 'Advanced'}
+
+  const ChainPricesData = () => {
+    return (
+      <div className="flex flex-row gap-1">
+        <div><span className="price-label">Gas price:</span> <span className="price-value">{formatETH(feeData?.gasPrice || 0)}</span></div>
+        <div><span className="price-label">ETH price:</span> <span className="price-value">{nativeGasTokenPrice} USD</span></div>
+        <div><span className="price-label">Swap cost:</span> <span className="price-value">{SWAP_GAS_REQUIRED * nativeGasTokenPrice * Number(feeData?.gasPrice) / 10**18} USD</span></div>
       </div>
-      <div className="flex flex-col" style={ showAdvanced ? {} : { display: 'none' } }>
-        <div className="flex flex-row gap-1">
-          <div>Gas price: {formatETH(feeData?.gasPrice || 0)} /</div>
-          <div>ETH price: {nativeGasTokenPrice} USD /</div>
-          <div>Swap cost: {SWAP_GAS_REQUIRED * nativeGasTokenPrice * Number(feeData?.gasPrice) / 10**18} USD</div>
-        </div>
+    )
+  }
+
+  const ComissionInput = () => {
+    return (
+      <div className="flex flex-col">
         <div className="flex flex-row justify-between" style={{ 'margin-bottom': '3px'}}>
           <div>Comission</div>
           <div>
@@ -103,6 +110,7 @@ export const AdvancedOptions = ({ token }) => {
         <RewardInput
           sx={{ ml: 1, flex: 1 }}
           value={rewardValue}
+          style={{ 'margin-left': '-3px' }}
           onChange={updateRewardValue}
           inputProps={{
              classes: {
@@ -111,9 +119,12 @@ export const AdvancedOptions = ({ token }) => {
           }}
         />
       </div>
+    )
+  }
 
-
-      <div className="flex flex-col" style={ showAdvanced ? {} : { display: 'none' } }>
+  const RewardWidget = () => {
+    return (
+      <div className="flex flex-col">
         <div className="flex flex-row justify-between" style={{ 'margin-bottom': '3px'}}>
           <div>Order lifetime</div>
           <div>
@@ -124,6 +135,7 @@ export const AdvancedOptions = ({ token }) => {
         <RewardInput
           sx={{ ml: 1, flex: 1 }}
           value={lifetime.value}
+          style={{ 'margin-left': '-3px' }}
           onChange={updateTtlValue}
           inputProps={{
              classes: {
@@ -133,7 +145,20 @@ export const AdvancedOptions = ({ token }) => {
         />
       </div>
 
+    )
+  }
 
-    </>
+  return (
+    <div style={{ margin: '10px 0'}}>
+      <div className="underline" style={ showAdvanced ? { display: 'none'} : styles.AdvancedButton } onClick={toggleAdvancedSettings}>Advanced</div>
+      <div className="advanced-options-panel flex flex-col gap-3" style={ showAdvanced ? {} : { display: 'none' } }> 
+        <div className="divider">Advanced [<span style={styles.AdvancedButton} onClick={toggleAdvancedSettings}>Hide</span>]</div>
+        <ChainPricesData />
+        <ComissionInput />
+        <RewardWidget />
+      </div>
+
+
+    </div>
   )
 }

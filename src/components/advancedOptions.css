@@ -1,0 +1,26 @@
+.divider {
+  display: flex;
+  align-items: center;
+  color: gray;
+}
+
+.divider::before, .divider::after {
+  flex: 1;
+  content: '';
+  padding: 2px 0;
+  background-color: gray;
+  margin: 5px 0;
+}
+
+.price-value {
+  background: white;
+  font-weight: bold;
+  font-size: 11pt;
+  padding: 5px;
+  border-radius: 7px;
+  border: 1px solid #DFDEDE;
+}
+
+.price-label {
+  font-style: italic;
+}
