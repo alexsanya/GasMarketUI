@@ -1,5 +1,12 @@
 import '@rainbow-me/rainbowkit/styles.css'
 import './globals.css'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  icons: {
+    icon: ['/favicon.ico'],
+  },
+};
 
 export default function RootLayout({
   children,
