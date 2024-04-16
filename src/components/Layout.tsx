@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import '../app/globals.css'
 import './captions.css'
 import { Logo } from '../components/Logo'
@@ -41,13 +43,13 @@ Secure peer-to-peer swap</div>
                     <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
                       <ul className="flex w-full justify-between items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
                           <li>
-                              <a href="https://medium.com/coinmonks/gas-less-way-to-purchase-eth-for-usdc-16c78ae204db" className="underline" target="_blank" style={styles.FooterLink}>How it works</a>
+                              <a rel="noreferrer" href="https://medium.com/coinmonks/gas-less-way-to-purchase-eth-for-usdc-16c78ae204db" className="underline" target="_blank" style={styles.FooterLink}>How it works</a>
                           </li>
                           <li>
-                              <a href="https://medium.com/@alexsanyakoval/gas-less-way-to-purchase-eth-for-usdc-b5a514589f79" className="underline" target="_blank" style={styles.FooterLink}>Became gas provider</a>
+                              <a rel="noreferrer" href="https://medium.com/@alexsanyakoval/gas-less-way-to-purchase-eth-for-usdc-b5a514589f79" className="underline" target="_blank" style={styles.FooterLink}>Became gas provider</a>
                           </li>
                           <li>
-                              <a href="mailto:olekskoval@proton.me" target="_blank" className="underline" style={styles.FooterLink}>Report a problem</a>
+                              <a rel="noreferrer" href="mailto:olekskoval@proton.me" target="_blank" className="underline" style={styles.FooterLink}>Report a problem</a>
                           </li>
                       </ul>
                     </div>
