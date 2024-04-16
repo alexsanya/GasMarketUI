@@ -10,6 +10,7 @@ import useConfig from '../hooks/useConfig'
 import formatETH from '../utils/formatETH'
 import useMaticPrice from '../hooks/useMaticPrice'
 import useSuggestedFee from '../hooks/useSuggestedFee'
+import { EVENTS_SERVER } from '../config'
 import { useFeeData } from "wagmi"
 import './advancedOptions.css';
 
@@ -56,7 +57,7 @@ export const AdvancedOptions = ({ token }) => {
   const tokenDecimals = useDecimals(token)
   const nativeGasTokenPrice = useMaticPrice()
   const { data: feeData, isError, isLoading } = useFeeData()
-  const { DEFAULT_ORDER_TTL_SEC, SWAP_GAS_REQUIRED, MIN_COMISSION } = useConfig()
+  const { DEFAULT_ORDER_TTL_SEC, SWAP_GAS_REQUIRED } = useConfig()
   const suggestedFee = useSuggestedFee(token)
   
 
@@ -153,6 +154,11 @@ export const AdvancedOptions = ({ token }) => {
       <div className="underline" style={ showAdvanced ? { display: 'none'} : styles.AdvancedButton } onClick={toggleAdvancedSettings}>Advanced</div>
       <div className="advanced-options-panel flex flex-col gap-3" style={ showAdvanced ? {} : { display: 'none' } }> 
         <div className="divider">Advanced [<span style={styles.AdvancedButton} onClick={toggleAdvancedSettings}>Hide</span>]</div>
+        <div className="flex flex-row gap-1">
+          <div>
+            <span className="price-label">Orders notifier:</span> <span className="price-value">{EVENTS_SERVER}</span>
+          </div>
+        </div>
         <ChainPricesData />
         <ComissionInput />
         <RewardWidget />
