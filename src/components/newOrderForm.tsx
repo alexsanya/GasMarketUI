@@ -44,6 +44,18 @@ export function OrderForm({ amountFrom, setAmountFrom, tokenData, setTokenData }
     }
   }
 
+
+  const ORDER_EXPIRATION_GAP = 2000
+
+  const startTimer = orderTTL => {
+    console.log(`Order will expire in ${orderTTL} milliseconds`)
+    setTimeout(() => {
+      if (OrderState.BROADCASTED) {
+        state.value = OrderState.EXPIRED
+      }
+    }, orderTTL + ORDER_EXPIRATION_GAP)
+  }
+
   const onRewardSigned = async (order) => {
     state.value = OrderState.SUBMITTED
 
@@ -56,6 +68,8 @@ export function OrderForm({ amountFrom, setAmountFrom, tokenData, setTokenData }
       })
     if (response.ok) {
       state.value = OrderState.BROADCASTED
+      console.log(order)
+      startTimer(order.deadline*1000 - Date.now())
       setOrderData(null)
     } else {
       state.value = OrderState.INVALID
