@@ -3,6 +3,7 @@
 import '../app/globals.css'
 import './captions.css'
 import { Logo } from '../components/Logo'
+import useConfig from '../hooks/useConfig'
 
 const styles = {
   Background: {
@@ -22,11 +23,16 @@ const styles = {
   }
 }
 
+
+
 export default function Layout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
+  const { EXPLORER_URL, GAS_BROKER_ADDRESS } = useConfig()
+
   return (
     <section>
       <div className="flex h-screen flex-row" style={styles.Background}>
@@ -37,7 +43,7 @@ export default function Layout({
                   <Logo />
               </div>
               <div className="flex flex-col justify-between" style={styles.MenuPanel}>
-                  <div className="mainHeader">Web3.0 resque service</div>
+                  <div className="mainHeader">Web3.0 rescue service</div>
                   <div className="mb-auto description">Exchange your ERC20 to native gas tokens via meta transaction.<br/>
 Secure peer-to-peer swap</div>
                     <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
@@ -49,7 +55,7 @@ Secure peer-to-peer swap</div>
                               <a rel="noreferrer" href="https://medium.com/@alexsanyakoval/gas-less-way-to-purchase-eth-for-usdc-b5a514589f79" className="underline" target="_blank" style={styles.FooterLink}>Became gas provider</a>
                           </li>
                           <li>
-                              <a rel="noreferrer" href="mailto:olekskoval@proton.me" target="_blank" className="underline" style={styles.FooterLink}>Report a problem</a>
+                              <a rel="noreferrer" href={`${EXPLORER_URL}address/${GAS_BROKER_ADDRESS}`} target="_blank" className="underline" style={styles.FooterLink}>Smart contract</a>
                           </li>
                       </ul>
                     </div>
