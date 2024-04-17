@@ -13,7 +13,7 @@ const styles = {
 };
 
 const defaultProps = {
-  image: 'https://images.unsplash.com/photo-1597766363123-53fa3b1d5f6d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wyMDUzMDJ8MHwxfHNlYXJjaHwzfHxqdW1wc3RhcnR8ZW58MXx8fHwxNzA1NDU3MTk3fDA&ixlib=rb-4.0.3&q=80&w=1080',
+  image: 'https://static-img-hosting.s3.amazonaws.com/logo.jpeg',
 }
 
 export const Logo = (props) => {
